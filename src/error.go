@@ -8,6 +8,7 @@ import (
 // printUsage prints usage & quits
 func printUsage() {
 	fmt.Printf("\nUsage:\tgo build; ./Random_Forest [DATA.CSV] [-h]\n\n")
+	fmt.Printf("    [-q]    (--quiet)        Quiet that shit down\n") //// shit!!!
 	fmt.Printf("    [-h]    (--help)         Show usage\n\n")
 	os.Exit(1)
 }

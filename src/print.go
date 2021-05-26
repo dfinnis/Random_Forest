@@ -9,12 +9,12 @@ const RED = "\x1B[31m"
 const GREEN = "\x1B[32m"
 
 // printHeader prints intro
-func printHeader( /*flags flags*/ ) {
-	// if !flags.flagQ {
-	fmt.Printf("\033[H\033[2J") // Clear screen
-	// } else {
-	// 	fmt.Printf("\n")
-	// }
+func printHeader(flags flags) {
+	if !flags.flagQ {
+		fmt.Printf("\033[H\033[2J") // Clear screen
+	} else {
+		fmt.Printf("\n")
+	}
 	fmt.Printf("%v%vLaunching Random Forest%v\n\n", BOLD, UNDERLINE, RESET)
 }
 
