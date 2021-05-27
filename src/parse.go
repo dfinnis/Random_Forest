@@ -10,12 +10,15 @@ type flags struct {
 	dataPath    string
 	dataPathSet bool
 	flagQ       bool
+	depth       int // tree depth
+	// size        int    // number of trees
 }
 
 // defaultConfig initializes default values
 func defaultConfig() flags {
 	flags := flags{}
 	flags.dataPath = "data.csv"
+	flags.depth = 2 // best number ??
 	return flags
 }
 
@@ -38,6 +41,21 @@ func parseDataPath(filepath string, flags flags) flags {
 	return flags
 }
 
+// parseDepth parses string to int, must be between 0 & 100000
+func parseDepth(i int, args []string) int {
+	if i >= len(args) {
+		usageError("No depth number provided after -ep", "")
+	}
+	depth, err := strconv.Atoi(args[i])
+	if err != nil {
+		usageError("Bad depth: ", args[i])
+	}
+	if depth <= 0 || depth >= 100000 {
+		usageError("depth must be between 0 & 100000, given: ", args[i])
+	}
+	return depth
+}
+
 // parseArg parses & returns arguments for flags
 func parseArg() flags {
 	flags := defaultConfig()
@@ -54,6 +72,9 @@ func parseArg() flags {
 			printUsage()
 		} else if args[i] == "-q" || args[i] == "--quiet" {
 			flags.flagQ = true
+		} else if args[i] == "-d" || args[i] == "--depth" {
+			i++
+			flags.depth = parseDepth(i, args)
 		} else {
 			flags = parseDataPath(args[i], flags)
 		}

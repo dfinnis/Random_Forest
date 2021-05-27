@@ -105,10 +105,10 @@ func splitNode(current *node, depth int) {
 	splitNode(current.childRight, depth-1)
 }
 
-func train(forest forest, train_set [][]float32, depth int) {
+func train(forest forest, train_set [][]float32, flags flags) {
 	fmt.Printf("\n%v%vTrain Forest%v\n\n", BOLD, UNDERLINE, RESET)
 	forest.trees[0].data = train_set
-	splitNode(&forest.trees[0], depth)
+	splitNode(&forest.trees[0], flags.depth)
 }
 
 // RandomForest is the main & only exposed function
@@ -126,7 +126,7 @@ func RandomForest() {
 	forest := initForest()
 
 	// Train
-	train(forest, train_set, 2)
+	train(forest, train_set, flags)
 
 	// Predict
 
