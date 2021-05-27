@@ -130,12 +130,13 @@ func RandomForest() {
 
 	// Predict
 
-	fmt.Printf("forest.trees[0].feature: %v\n", forest.trees[0].feature)                     ///////////////////
-	fmt.Printf("forest.trees[0].impurity: %v\n", forest.trees[0].impurity)                   ///////////////////
-	fmt.Printf("forest.trees[0].split: %v\n", forest.trees[0].split)                         ///////////////////
-	fmt.Printf("len(forest.trees[0].data: %v\n", len(forest.trees[0].data))                  ///////////////////
-	fmt.Printf("len(forest.trees[0].childLeft: %v\n", len(forest.trees[0].childLeft.data))   ///////////////////
-	fmt.Printf("len(forest.trees[0].childRight: %v\n", len(forest.trees[0].childRight.data)) ///////////////////
+	// fmt.Printf("forest.trees[0].feature: %v\n", forest.trees[0].feature)                     ///////////////////
+	// fmt.Printf("forest.trees[0].impurity: %v\n", forest.trees[0].impurity)                   ///////////////////
+	// fmt.Printf("forest.trees[0].split: %v\n", forest.trees[0].split)                         ///////////////////
+	// fmt.Printf("len(forest.trees[0].data: %v\n", len(forest.trees[0].data))                  ///////////////////
+	// fmt.Printf("len(forest.trees[0].childLeft: %v\n", len(forest.trees[0].childLeft.data))   ///////////////////
+	// fmt.Printf("len(forest.trees[0].childRight: %v\n", len(forest.trees[0].childRight.data)) ///////////////////
 
+	printTree(&forest.trees[0], 0)
 	fmt.Printf("Oh Hi!!\n") ///////////////////
 }
