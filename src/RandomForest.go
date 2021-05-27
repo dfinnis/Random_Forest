@@ -76,7 +76,11 @@ func splitFeature(set [][]float32, feature int) (float32, float32, [][]float32, 
 	return bestImpurity, bestSplit, bestLeft, bestRight
 }
 
-func splitNode(current *node) {
+func splitNode(current *node, depth int) {
+	if depth <= 0 {
+		return
+	}
+
 	current.childLeft = &node{}
 	current.childRight = &node{}
 
@@ -93,15 +97,18 @@ func splitNode(current *node) {
 			current.childRight.data = right
 		}
 	}
-	// fmt.Printf("bestFeature: %v\n", current.feature)   /////////
-	// fmt.Printf("bestImpurity: %v\n", current.impurity) /////////
-	// fmt.Printf("bestSplit: %v\n", current.split)       /////////
+	fmt.Printf("bestFeature: %v\n", current.feature)   /////////
+	fmt.Printf("bestImpurity: %v\n", current.impurity) /////////
+	fmt.Printf("bestSplit: %v\n\n", current.split)     /////////
+
+	splitNode(current.childLeft, depth-1)
+	splitNode(current.childRight, depth-1)
 }
 
-func train(forest forest, train_set [][]float32) {
+func train(forest forest, train_set [][]float32, depth int) {
 	fmt.Printf("\n%v%vTrain Forest%v\n\n", BOLD, UNDERLINE, RESET)
 	forest.trees[0].data = train_set
-	splitNode(&forest.trees[0])
+	splitNode(&forest.trees[0], depth)
 }
 
 // RandomForest is the main & only exposed function
@@ -119,7 +126,7 @@ func RandomForest() {
 	forest := initForest()
 
 	// Train
-	train(forest, train_set)
+	train(forest, train_set, 2)
 
 	// Predict
 
