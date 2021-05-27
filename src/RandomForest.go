@@ -76,32 +76,32 @@ func splitFeature(set [][]float32, feature int) (float32, float32, [][]float32, 
 	return bestImpurity, bestSplit, bestLeft, bestRight
 }
 
-func splitNode(forest forest) {
-	forest.trees[0].childLeft = &node{}
-	forest.trees[0].childRight = &node{}
+func splitNode(current *node) {
+	current.childLeft = &node{}
+	current.childRight = &node{}
 
-	forest.trees[0].impurity = giniImpurity(forest.trees[0].data) // impurity of root, daiagnose all Benign
-	// fmt.Printf("root Impurity: %v\n\n", forest.trees[0].impurity) /////////////
-	for feature := 1; feature < len(forest.trees[0].data[0]); feature++ {
+	current.impurity = giniImpurity(current.data)
+	// fmt.Printf("root Impurity: %v\n\n", current.impurity) /////////////
+	for feature := 1; feature < len(current.data[0]); feature++ {
 		// fmt.Printf("feature: %v\n", feature) ////////////
-		impurity, split, left, right := splitFeature(forest.trees[0].data, feature)
-		if impurity < forest.trees[0].impurity {
-			forest.trees[0].impurity = impurity
-			forest.trees[0].split = split
-			forest.trees[0].feature = feature
-			forest.trees[0].childLeft.data = left
-			forest.trees[0].childRight.data = right
+		impurity, split, left, right := splitFeature(current.data, feature)
+		if impurity < current.impurity {
+			current.impurity = impurity
+			current.split = split
+			current.feature = feature
+			current.childLeft.data = left
+			current.childRight.data = right
 		}
 	}
-	// fmt.Printf("bestFeature: %v\n", forest.trees[0].feature)   /////////
-	// fmt.Printf("bestImpurity: %v\n", forest.trees[0].impurity) /////////
-	// fmt.Printf("bestSplit: %v\n", forest.trees[0].split)       /////////
+	// fmt.Printf("bestFeature: %v\n", current.feature)   /////////
+	// fmt.Printf("bestImpurity: %v\n", current.impurity) /////////
+	// fmt.Printf("bestSplit: %v\n", current.split)       /////////
 }
 
 func train(forest forest, train_set [][]float32) {
 	fmt.Printf("\n%v%vTrain Forest%v\n\n", BOLD, UNDERLINE, RESET)
 	forest.trees[0].data = train_set
-	splitNode(forest)
+	splitNode(&forest.trees[0])
 }
 
 // RandomForest is the main & only exposed function
