@@ -32,7 +32,7 @@ func initForest() forest {
 	return forest
 }
 
-func sortSet(set [][]float32, feature uint) [][]float32 {
+func sortSet(set [][]float32, feature int) [][]float32 {
 	sort.SliceStable(set, func(i, j int) bool {
 		return set[i][feature] < set[j][feature]
 	})
@@ -51,7 +51,7 @@ func giniImpurity(set [][]float32) float32 {
 	return impurity
 }
 
-func splitFeature(set [][]float32, feature uint) (float32, float32) {
+func splitFeature(set [][]float32, feature int) (float32, float32) {
 	set = sortSet(set, feature)
 	bestImpurity := (giniImpurity(set[:1]) * (float32(1) / float32(len(set)))) + (giniImpurity(set[1:]) * (float32(len(set)-(1)) / float32(len(set))))
 	bestSplit := (set[0][feature] + set[1][feature]) / 2
@@ -67,15 +67,29 @@ func splitFeature(set [][]float32, feature uint) (float32, float32) {
 		// break                                                  /////////
 	}
 	fmt.Printf("bestImpurity: %v\n", bestImpurity) //////////////
-	fmt.Printf("bestSplit: %v\n", bestSplit)       //////////////
+	fmt.Printf("bestSplit: %v\n\n", bestSplit)     //////////////
 	return bestImpurity, bestSplit
 }
 
 func train(forest forest, train_set [][]float32) {
 	fmt.Printf("\n%v%vTrain Forest%v\n\n", BOLD, UNDERLINE, RESET)
-	impurity := giniImpurity(train_set) // impurity of root, daiagnose all Benign
-	fmt.Printf("root impurity: %v\n\n", impurity)
-	splitFeature(train_set, 1)
+	bestImpurity := giniImpurity(train_set) // impurity of root, daiagnose all Benign
+	fmt.Printf("root Impurity: %v\n\n", bestImpurity)
+	var bestSplit float32
+	var bestFeature int
+	for feature := 1; feature < len(train_set[0]); feature++ {
+		fmt.Printf("feature: %v\n", feature) ////////////
+		impurity, split := splitFeature(train_set, feature)
+		if impurity < bestImpurity {
+			bestImpurity = impurity
+			bestSplit = split
+			bestFeature = feature
+		}
+	}
+	fmt.Printf("bestImpurity: %v\n", bestImpurity) /////////
+	fmt.Printf("bestSplit: %v\n", bestSplit)       /////////
+	fmt.Printf("bestFeature: %v\n", bestFeature)   /////////
+
 }
 
 // RandomForest is the main & only exposed function
