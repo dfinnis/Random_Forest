@@ -39,19 +39,43 @@ func sortSet(set [][]float32, feature uint) [][]float32 {
 	return set
 }
 
-func giniImpurity(set [][]float32, feature uint, split float32) float32 {
-	var impurity float32
-	set = sortSet(set, feature)
-	for i, sample := range set {
-		fmt.Printf("%3v. sample[feature]: %-13v, diagnosis: %v\n", i, sample[feature], sample[0])
+func giniImpurity(set [][]float32) float32 {
+	var diagnosis float32
+	var i int
+	for ; i < len(set); i++ {
+		diagnosis += set[i][0]
 	}
+	diagnosis /= float32(i)
+	antiDiagnosis := 1 - diagnosis
+	impurity := 1 - ((diagnosis * diagnosis) + (antiDiagnosis * antiDiagnosis))
 	return impurity
+}
+
+func splitFeature(set [][]float32, feature uint) (float32, float32) {
+	set = sortSet(set, feature)
+	bestImpurity := (giniImpurity(set[:1]) * (float32(1) / float32(len(set)))) + (giniImpurity(set[1:]) * (float32(len(set)-(1)) / float32(len(set))))
+	bestSplit := (set[0][feature] + set[1][feature]) / 2
+	for i := 1; i < len(set)-1; i++ {
+		// fmt.Printf("%3v. sample[feature]: %-13v, diagnosis: %v\n", i, set[i][feature], set[i][0]) /////////////
+
+		weightedImpurity := (giniImpurity(set[:i+1]) * (float32(i+1) / float32(len(set)))) + (giniImpurity(set[i+1:]) * (float32(len(set)-(i+1)) / float32(len(set))))
+		if weightedImpurity < bestImpurity {
+			bestImpurity = weightedImpurity
+			bestSplit = (set[i][feature] + set[i+1][feature]) / 2
+		}
+		// fmt.Printf("weightedImpurity: %v\n", weightedImpurity) //////////////
+		// break                                                  /////////
+	}
+	fmt.Printf("bestImpurity: %v\n", bestImpurity) //////////////
+	fmt.Printf("bestSplit: %v\n", bestSplit)       //////////////
+	return bestImpurity, bestSplit
 }
 
 func train(forest forest, train_set [][]float32) {
 	fmt.Printf("\n%v%vTrain Forest%v\n\n", BOLD, UNDERLINE, RESET)
-	impurity := giniImpurity(train_set, 1, 0)
-	fmt.Printf("impurity: %v\n\n", impurity)
+	impurity := giniImpurity(train_set) // impurity of root, daiagnose all Benign
+	fmt.Printf("root impurity: %v\n\n", impurity)
+	splitFeature(train_set, 1)
 }
 
 // RandomForest is the main & only exposed function
