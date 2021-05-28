@@ -3,11 +3,11 @@ package forest
 import "fmt"
 
 // truthTally counts true & false, positives & negatives
-func truthTally(predictions, truth []bool) (float32, float32, float32, float32) {
-	var tp float32 // True Positive		// Predicted True & Is True
-	var fn float32 // False Negative	// Predicted False & Is True
-	var fp float32 // False Positive	// Predicted True & Is False
-	var tn float32 // True Negative		// Predicted False & Is False
+func truthTally(predictions, truth []bool) (tp, fn, fp, tn uint) {
+	// var tp uint // True Positive		// Predicted True & Is True
+	// var fn uint // False Negative	// Predicted False & Is True
+	// var fp uint // False Positive	// Predicted True & Is False
+	// var tn uint // True Negative		// Predicted False & Is False
 
 	for i := 0; i < len(predictions); i++ {
 		if truth[i] { // Is True
@@ -24,11 +24,10 @@ func truthTally(predictions, truth []bool) (float32, float32, float32, float32) 
 			}
 		}
 	}
-	return tp, fn, fp, tn
+	return
 }
 
-func predict(forest forest, test_set [][]float32, flags flags) {
-	fmt.Printf("\n%v%vPredict%v\n\n", BOLD, UNDERLINE, RESET)
+func predictTally(forest forest, data [][]float32) (tp, fn, fp, tn uint) {
 	var predictions []bool
 	var truth []bool
 	// for sample := 0; sample < len(test_set); sample++ {
@@ -36,7 +35,7 @@ func predict(forest forest, test_set [][]float32, flags flags) {
 	tree := forest.trees[0]
 	// printNode(&tree, 0)
 
-	for _, sample := range test_set {
+	for _, sample := range data {
 		// fmt.Printf("sample %v: %v\n", i, sample[0])
 		// if sample[0] == 1 { // Malignant
 		// 	// fmt.Printf("M\n")
@@ -76,6 +75,12 @@ func predict(forest forest, test_set [][]float32, flags flags) {
 	// for i := 0; i < len(predictions); i++ {
 	// 	fmt.Printf("%-3v prediction: %-5v, truth: %v\n", i, predictions[i], truth[i])
 	// }
-	tp, fn, fp, tn := truthTally(predictions, truth)
+	// tp, fn, fp, tn := truthTally(predictions, truth)
+	return truthTally(predictions, truth)
+}
+
+func predict(forest forest, test_set [][]float32) {
+	fmt.Printf("\n%v%vPredict%v\n\n", BOLD, UNDERLINE, RESET)
+	tp, fn, fp, tn := predictTally(forest, test_set)
 	confusionMatrix(tp, fn, fp, tn)
 }

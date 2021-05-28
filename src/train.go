@@ -153,11 +153,12 @@ func splitNode(current *node, currentDepth, depth int, treeInfo *treeInfo) {
 	splitNode(current.childRight, currentDepth+1, depth, treeInfo)
 }
 
-func train(forest forest, train_set [][]float32, flags flags) {
+func train(forest forest, train_set, test_set [][]float32, flags flags) {
 	fmt.Printf("\n%v%vTrain Forest%v\n\n", BOLD, UNDERLINE, RESET)
 	forest.trees[0].data = train_set
 	treeInfo := treeInfo{}
 	splitNode(&forest.trees[0], 0, flags.depth, &treeInfo)
 	fmt.Printf("nodes: %v\n", treeInfo.nodes)
 	fmt.Printf("leafs: %v\n", treeInfo.leafs)
+	printTrain(forest, train_set, test_set)
 }

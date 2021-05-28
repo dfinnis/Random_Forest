@@ -19,10 +19,10 @@ func RandomForest() {
 	forest := initForest()
 
 	// Train
-	train(forest, train_set, flags)
+	train(forest, train_set, test_set, flags)
 
 	// Predict
-	predict(forest, test_set, flags)
+	predict(forest, test_set)
 
 	// printTree(&forest.trees[0], 0)
 	fmt.Printf("Oh Hi!!\n") ///////////////////
