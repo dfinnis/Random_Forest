@@ -2,6 +2,31 @@ package forest
 
 import "fmt"
 
+// truthTally counts true & false, positives & negatives
+func truthTally(predictions, truth []bool) (float32, float32, float32, float32) {
+	var tp float32 // True Positive		// Predicted True & Is True
+	var fn float32 // False Negative	// Predicted False & Is True
+	var fp float32 // False Positive	// Predicted True & Is False
+	var tn float32 // True Negative		// Predicted False & Is False
+
+	for i := 0; i < len(predictions); i++ {
+		if truth[i] { // Is True
+			if predictions[i] { // Predicted True
+				tp += 1
+			} else { // Predicted False
+				fn += 1
+			}
+		} else { // Is False
+			if predictions[i] { // Predicted True
+				fp += 1
+			} else { // Predicted False
+				tn += 1
+			}
+		}
+	}
+	return tp, fn, fp, tn
+}
+
 func predict(forest forest, test_set [][]float32, flags flags) {
 	fmt.Printf("\n%v%vPredict%v\n\n", BOLD, UNDERLINE, RESET)
 	var predictions []bool
@@ -9,10 +34,10 @@ func predict(forest forest, test_set [][]float32, flags flags) {
 	// for sample := 0; sample < len(test_set); sample++ {
 
 	tree := forest.trees[0]
-	printNode(&tree, 0)
+	// printNode(&tree, 0)
 
-	for i, sample := range test_set {
-		fmt.Printf("sample %v: %v\n", i, sample[0])
+	for _, sample := range test_set {
+		// fmt.Printf("sample %v: %v\n", i, sample[0])
 		// if sample[0] == 1 { // Malignant
 		// 	// fmt.Printf("M\n")
 		// }
@@ -31,7 +56,7 @@ func predict(forest forest, test_set [][]float32, flags flags) {
 				node = *node.childRight
 			}
 			if node.feature == 0 {
-				printNode(&node, node.depth) ////////////
+				// printNode(&node, node.depth) ////////////
 				// prediction := node.diagnosis
 				predictions = append(predictions, node.diagnosis)
 				// fmt.Printf("prediction: %v\n", prediction) //////////////
@@ -48,7 +73,9 @@ func predict(forest forest, test_set [][]float32, flags flags) {
 		}
 		// break //
 	}
-	for i := 0; i < len(predictions); i++ {
-		fmt.Printf("%-3v prediction: %-5v, truth: %v\n", i, predictions[i], truth[i])
-	}
+	// for i := 0; i < len(predictions); i++ {
+	// 	fmt.Printf("%-3v prediction: %-5v, truth: %v\n", i, predictions[i], truth[i])
+	// }
+	tp, fn, fp, tn := truthTally(predictions, truth)
+	confusionMatrix(tp, fn, fp, tn)
 }
