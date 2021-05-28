@@ -22,6 +22,7 @@ func RandomForest() {
 	train(forest, train_set, flags)
 
 	// Predict
+	predict(forest, test_set, flags)
 
 	// printTree(&forest.trees[0], 0)
 	fmt.Printf("Oh Hi!!\n") ///////////////////
