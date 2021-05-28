@@ -5,6 +5,11 @@ import (
 	"sort"
 )
 
+type treeInfo struct {
+	nodes uint
+	leafs uint
+}
+
 type node struct {
 	feature    int // data column // uint8????!!!!!!!!!!!!!
 	impurity   float32
@@ -76,9 +81,10 @@ func splitFeature(set [][]float32, feature int) (float32, float32, [][]float32, 
 	return bestImpurity, bestSplit, bestLeft, bestRight
 }
 
-func splitNode(current *node, depth int, nodes *uint) {
-	*nodes += 1
+func splitNode(current *node, depth int, treeInfo *treeInfo) {
+	treeInfo.nodes += 1
 	if depth <= 0 {
+		treeInfo.leafs += 1
 		// fmt.Printf("depth <= 0\n") ////////////
 		// printNode(current, depth)  ////////////////////////????????
 		return
@@ -92,6 +98,7 @@ func splitNode(current *node, depth int, nodes *uint) {
 	current.impurity = giniImpurity(current.data)
 	bestImpurity := current.impurity
 	if bestImpurity == 0 {
+		treeInfo.leafs += 1
 		// fmt.Printf("current.impurity == 0\n") ////////////
 		// printNode(current, depth)             ////////////////////////????????
 		return
@@ -116,6 +123,7 @@ func splitNode(current *node, depth int, nodes *uint) {
 	// fmt.Printf("bestSplit: %v\n\n", bestSplit)     /////////
 
 	if len(bestLeft) == 0 || len(bestRight) == 0 {
+		treeInfo.leafs += 1
 		// fmt.Printf("len(bestLeft) == 0 || len(bestRight) == 0\n") ////////////
 		// printNode(current, depth)                                 ////////////////////////????????
 		return
@@ -129,15 +137,15 @@ func splitNode(current *node, depth int, nodes *uint) {
 	current.childRight = &node{}
 	current.childLeft.data = bestLeft
 	current.childRight.data = bestRight
-	splitNode(current.childLeft, depth-1, nodes)
-	splitNode(current.childRight, depth-1, nodes)
+	splitNode(current.childLeft, depth-1, treeInfo)
+	splitNode(current.childRight, depth-1, treeInfo)
 }
 
 func train(forest forest, train_set [][]float32, flags flags) {
 	fmt.Printf("\n%v%vTrain Forest%v\n\n", BOLD, UNDERLINE, RESET)
 	forest.trees[0].data = train_set
-	var nodes uint
-	// var leafs uint
-	splitNode(&forest.trees[0], flags.depth, &nodes)
-	fmt.Printf("nodes: %v\n", nodes)
+	treeInfo := treeInfo{}
+	splitNode(&forest.trees[0], flags.depth, &treeInfo)
+	fmt.Printf("nodes: %v\n", treeInfo.nodes)
+	fmt.Printf("leafs: %v\n", treeInfo.leafs)
 }
