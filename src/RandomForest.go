@@ -78,29 +78,56 @@ func splitFeature(set [][]float32, feature int) (float32, float32, [][]float32, 
 
 func splitNode(current *node, depth int) {
 	if depth <= 0 {
+		fmt.Printf("depth <= 0\n") ////////////
+		printNode(current, depth)  ////////////////////////????????
 		return
 	}
 
-	current.childLeft = &node{}
-	current.childRight = &node{}
+	var bestFeature int
+	var bestSplit float32
+	var bestLeft [][]float32
+	var bestRight [][]float32
 
 	current.impurity = giniImpurity(current.data)
+	bestImpurity := current.impurity
+	if bestImpurity == 0 {
+		fmt.Printf("current.impurity == 0\n") ////////////
+		printNode(current, depth)             ////////////////////////????????
+		return
+	}
 	// fmt.Printf("root Impurity: %v\n\n", current.impurity) /////////////
 	for feature := 1; feature < len(current.data[0]); feature++ {
-		// fmt.Printf("feature: %v\n", feature) ////////////
 		impurity, split, left, right := splitFeature(current.data, feature)
-		if impurity < current.impurity {
-			current.impurity = impurity
-			current.split = split
-			current.feature = feature
-			current.childLeft.data = left
-			current.childRight.data = right
+		// fmt.Printf("feature: %v, impurity: %v\n", feature, impurity) ////////////
+		if impurity < bestImpurity {
+			bestFeature = feature
+			bestImpurity = impurity
+			bestSplit = split
+			bestLeft = left
+			bestRight = right
+		}
+		if impurity == 0 {
+			break
 		}
 	}
-	fmt.Printf("bestFeature: %v\n", current.feature)   /////////
-	fmt.Printf("bestImpurity: %v\n", current.impurity) /////////
-	fmt.Printf("bestSplit: %v\n\n", current.split)     /////////
+	// fmt.Printf("bestFeature: %v\n", bestFeature)   /////////
+	// fmt.Printf("bestImpurity: %v\n", bestImpurity) /////////
+	// fmt.Printf("bestSplit: %v\n\n", bestSplit)     /////////
 
+	if len(bestLeft) == 0 || len(bestRight) == 0 {
+		fmt.Printf("len(bestLeft) == 0 || len(bestRight) == 0\n") ////////////
+		printNode(current, depth)                                 ////////////////////////????????
+		return
+	}
+	current.impurity = bestImpurity
+	current.feature = bestFeature
+	current.split = bestSplit
+	printNode(current, depth) ////////////////////////????????
+
+	current.childLeft = &node{}
+	current.childRight = &node{}
+	current.childLeft.data = bestLeft
+	current.childRight.data = bestRight
 	splitNode(current.childLeft, depth-1)
 	splitNode(current.childRight, depth-1)
 }
@@ -137,6 +164,6 @@ func RandomForest() {
 	// fmt.Printf("len(forest.trees[0].childLeft: %v\n", len(forest.trees[0].childLeft.data))   ///////////////////
 	// fmt.Printf("len(forest.trees[0].childRight: %v\n", len(forest.trees[0].childRight.data)) ///////////////////
 
-	printTree(&forest.trees[0], 0)
+	// printTree(&forest.trees[0], 0)
 	fmt.Printf("Oh Hi!!\n") ///////////////////
 }
