@@ -82,5 +82,6 @@ func predictTally(forest forest, data [][]float32) (tp, fn, fp, tn uint) {
 func predict(forest forest, test_set [][]float32) {
 	fmt.Printf("\n%v%vPredict%v\n\n", BOLD, UNDERLINE, RESET)
 	tp, fn, fp, tn := predictTally(forest, test_set)
+	printMetrics(tp, fn, fp, tn)
 	confusionMatrix(tp, fn, fp, tn)
 }
