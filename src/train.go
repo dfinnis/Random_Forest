@@ -6,8 +6,11 @@ import (
 )
 
 type treeInfo struct {
-	nodes uint
-	leafs uint
+	nodes    uint
+	leafs    uint
+	samples  float32 // per leaf              min mean max?
+	impurity float32 // mean for leafs        min mean max?
+	depth    int     // deepest                  min mean max?
 }
 
 type node struct {
@@ -82,6 +85,16 @@ func splitFeature(set [][]float32, feature int) (float32, float32, [][]float32, 
 	return bestImpurity, bestSplit, bestLeft, bestRight
 }
 
+func recordLeaf(current *node, treeInfo *treeInfo) {
+	treeInfo.leafs += 1
+	if current.depth > treeInfo.depth {
+		treeInfo.depth = current.depth
+
+	}
+	treeInfo.samples += float32(len(current.data))
+	treeInfo.impurity += current.impurity
+}
+
 func splitNode(current *node, currentDepth, depth int, treeInfo *treeInfo) {
 	treeInfo.nodes += 1
 	current.depth = currentDepth
@@ -98,7 +111,7 @@ func splitNode(current *node, currentDepth, depth int, treeInfo *treeInfo) {
 	current.diagnosis = diagnosis
 
 	if currentDepth >= depth {
-		treeInfo.leafs += 1
+		recordLeaf(current, treeInfo)
 		// fmt.Printf("depth <= 0\n") ////////////
 		// printNode(current, depth)  ////////////////////////????????
 		return
@@ -110,7 +123,7 @@ func splitNode(current *node, currentDepth, depth int, treeInfo *treeInfo) {
 	var bestRight [][]float32
 	bestImpurity := current.impurity
 	if bestImpurity == 0 {
-		treeInfo.leafs += 1
+		recordLeaf(current, treeInfo)
 		// fmt.Printf("current.impurity == 0\n") ////////////
 		// printNode(current, depth)             ////////////////////////????????
 		return
@@ -135,7 +148,7 @@ func splitNode(current *node, currentDepth, depth int, treeInfo *treeInfo) {
 	// fmt.Printf("bestSplit: %v\n\n", bestSplit)     /////////
 
 	if len(bestLeft) == 0 || len(bestRight) == 0 {
-		treeInfo.leafs += 1
+		recordLeaf(current, treeInfo)
 		// fmt.Printf("len(bestLeft) == 0 || len(bestRight) == 0\n") ////////////
 		// printNode(current, depth)                                 ////////////////////////????????
 		return
@@ -156,9 +169,12 @@ func splitNode(current *node, currentDepth, depth int, treeInfo *treeInfo) {
 func train(forest forest, train_set, test_set [][]float32, flags flags) {
 	fmt.Printf("\n%v%vTrain Forest%v\n\n", BOLD, UNDERLINE, RESET)
 	forest.trees[0].data = train_set
+	var treeInfos []treeInfo
 	treeInfo := treeInfo{}
 	splitNode(&forest.trees[0], 0, flags.depth, &treeInfo)
-	fmt.Printf("nodes: %v\n", treeInfo.nodes)
-	fmt.Printf("leafs: %v\n", treeInfo.leafs)
+	treeInfo.samples /= float32(treeInfo.leafs)
+	treeInfo.impurity /= float32(treeInfo.leafs)
+	treeInfos = append(treeInfos, treeInfo)
+	printForest(treeInfos)
 	printTrain(forest, train_set, test_set)
 }

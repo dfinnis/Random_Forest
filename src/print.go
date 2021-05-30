@@ -99,6 +99,21 @@ func printNode(current *node, depth int) {
 	fmt.Printf("+-----------+-------------------------+\n\n")
 }
 
+func printForest(treeInfos []treeInfo) {
+	fmt.Printf("+--------------+-------------------------+\n")
+	fmt.Printf("| Trees        | %v |\n", len(treeInfos))
+	fmt.Printf("+--------------+-------------------------+\n")
+	fmt.Printf("| Depth        | %v\n", treeInfos[0].depth)
+	fmt.Printf("| Nodes        | %v\n", treeInfos[0].nodes)
+	fmt.Printf("| Leafs        | %v\n", treeInfos[0].leafs)
+	fmt.Printf("| Gini mean    | %v\n", treeInfos[0].impurity)
+	fmt.Printf("| Samples/Leaf | %v\n", treeInfos[0].samples)
+
+	// Samples / leaf     min mean max
+	// leaf gini          min mean max
+	fmt.Printf("+--------------+-------------------------+\n\n")
+}
+
 // getMetrics converts true & false, positives & negatives into metrics
 func getMetrics(tpUint, fnUint, fpUint, tnUint uint) (accuracy, precision, recall, specificity, F1_score float32) {
 	tp := float32(tpUint)
