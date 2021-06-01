@@ -93,6 +93,7 @@ func recordLeaf(current *node, treeInfo *treeInfo) {
 	}
 	treeInfo.samples += float32(len(current.data))
 	treeInfo.impurity += current.impurity
+	fmt.Printf("dignosis: %-5v  impurity: %-10v  len(current.data): %v\n", current.diagnosis, current.impurity, len(current.data)) ///////////
 }
 
 func splitNode(current *node, currentDepth, depth int, treeInfo *treeInfo) {
@@ -104,11 +105,9 @@ func splitNode(current *node, currentDepth, depth int, treeInfo *treeInfo) {
 	for i := 0; i < len(current.data); i++ {
 		sum += current.data[i][0]
 	}
-	var diagnosis bool
 	if sum/float32(len(current.data)) > 0.5 {
-		diagnosis = true
+		current.diagnosis = true
 	}
-	current.diagnosis = diagnosis
 
 	if currentDepth >= depth {
 		recordLeaf(current, treeInfo)
