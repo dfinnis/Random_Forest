@@ -43,11 +43,6 @@ func predictTally(forest forest, data [][]float32) (tp, fn, fp, tn uint) {
 			// fmt.Printf("node.split: %v\n", node.split)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          //////////////
 			// fmt.Printf("sample[node.feature]: %v\n", sample[node.feature])                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      //////////////
 			// fmt.Printf("len(node.data): %v\n\n", len(node.data))                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                //////////////
-			if sample[node.feature] < node.split {
-				node = *node.childLeft
-			} else {
-				node = *node.childRight
-			}
 			if node.feature == 0 {
 				// printNode(&node, node.depth) ////////////
 				// prediction := node.diagnosis
@@ -60,6 +55,11 @@ func predictTally(forest forest, data [][]float32) (tp, fn, fp, tn uint) {
 				}
 				// fmt.Printf("truth: %v\n", truth) //////////////
 				break
+			}
+			if sample[node.feature] < node.split {
+				node = *node.childLeft
+			} else {
+				node = *node.childRight
 			}
 			// break //
 		}

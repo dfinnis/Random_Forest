@@ -22,6 +22,7 @@ type node struct {
 	childRight *node
 	data       [][]float32
 	diagnosis  bool // majority vote
+	accuracy   float32
 }
 
 type forest struct {
@@ -93,7 +94,7 @@ func recordLeaf(current *node, treeInfo *treeInfo) {
 	}
 	treeInfo.samples += float32(len(current.data))
 	treeInfo.impurity += current.impurity
-	fmt.Printf("dignosis: %-5v  impurity: %-10v  len(current.data): %v\n", current.diagnosis, current.impurity, len(current.data)) ///////////
+	fmt.Printf("dignosis: %-5v  correct: %3v / %v\n", current.diagnosis, current.accuracy*float32(len(current.data)), len(current.data)) ///////////
 }
 
 func splitNode(current *node, currentDepth, depth int, treeInfo *treeInfo) {
@@ -107,6 +108,11 @@ func splitNode(current *node, currentDepth, depth int, treeInfo *treeInfo) {
 	}
 	if sum/float32(len(current.data)) > 0.5 {
 		current.diagnosis = true
+	}
+	if current.diagnosis {
+		current.accuracy = sum / float32(len(current.data))
+	} else {
+		current.accuracy = 1 - (sum / float32(len(current.data)))
 	}
 
 	if currentDepth >= depth {
@@ -175,5 +181,6 @@ func train(forest forest, train_set, test_set [][]float32, flags flags) {
 	treeInfo.impurity /= float32(treeInfo.leafs)
 	treeInfos = append(treeInfos, treeInfo)
 	printForest(treeInfos)
+	printTree(&forest.trees[0], 0) ///////////
 	printTrain(forest, train_set, test_set)
 }
