@@ -43,7 +43,7 @@ func printNode(current *node, depth int) {
 
 	fmt.Printf("Depth: %v\n", depth)
 	fmt.Printf("+-----------+-------------------------+\n")
-	fmt.Printf("| Feature   | %-23v |\n", index[current.feature])
+	fmt.Printf("| Feature   | %-23v %v |\n", index[current.feature], current.feature)
 	if current.split == 0 {
 		fmt.Printf("| Split     | None (leaf)             |\n")
 	} else {
@@ -58,6 +58,10 @@ func printNode(current *node, depth int) {
 		fmt.Printf("| Diagnosis |%v Benign                  %v|\n", GREEN, RESET)
 	}
 	fmt.Printf("+-----------+-------------------------+\n\n")
+
+	// for i := 0; i < len(current.data); i++ { /////////////
+	// 	fmt.Printf("data[%v]: %v\n", i, current.data[i][1]) ////////
+	// } /////////////
 }
 
 func printTree(current *node, depth int) {
@@ -68,6 +72,7 @@ func printTree(current *node, depth int) {
 	if current.childRight != nil {
 		printTree(current.childRight, depth+1)
 	}
+	// fmt.Printf("\n\n") ////////
 }
 
 func printForest(treeInfos []treeInfo) {
@@ -105,6 +110,7 @@ func getMetrics(tpUint, fnUint, fpUint, tnUint uint) (accuracy, precision, recal
 }
 
 func printTrain(forest forest, train_set, test_set [][]float32) {
+	// printTree(&forest.trees[0], 0) ///////////
 	tpTrain, fnTrain, fpTrain, tnTrain := predictTally(forest, train_set)
 	tpTest, fnTest, fpTest, tnTest := predictTally(forest, test_set)
 

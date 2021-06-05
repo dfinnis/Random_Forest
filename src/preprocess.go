@@ -4,11 +4,8 @@ import (
 	"encoding/csv"
 	"fmt"
 	"io"
-	"math"
 	"os"
 	"strconv"
-
-	"gonum.org/v1/gonum/stat"
 )
 
 // readCsv reads data.csv into a 2d array of floats
@@ -69,38 +66,38 @@ func checkData(data [][]float32, filePath string) {
 	}
 }
 
-// float32to64 converts a list of float64 to float32
-func float32to64(in []float32) []float64 {
-	var out []float64
-	for _, element := range in {
-		out = append(out, float64(element))
-	}
-	return out
-}
+// // float32to64 converts a list of float64 to float32
+// func float32to64(in []float32) []float64 {
+// 	var out []float64
+// 	for _, element := range in {
+// 		out = append(out, float64(element))
+// 	}
+// 	return out
+// }
 
-// standardize centers data around mean, & applys a standard deviation
-func standardize(data [][]float32) {
-	for col := 1; col < len(data[0]); col++ {
-		var column []float32
-		for _, sample := range data {
-			column = append(column, sample[col])
-		}
+// // standardize centers data around mean, & applys a standard deviation
+// func standardize(data [][]float32) {
+// 	for col := 1; col < len(data[0]); col++ {
+// 		var column []float32
+// 		for _, sample := range data {
+// 			column = append(column, sample[col])
+// 		}
 
-		mean := float32(stat.Mean(float32to64(column), nil))
-		variance := stat.Variance(float32to64(column), nil)
-		stddev := float32(math.Sqrt(variance))
+// 		mean := float32(stat.Mean(float32to64(column), nil))
+// 		variance := stat.Variance(float32to64(column), nil)
+// 		stddev := float32(math.Sqrt(variance))
 
-		for sample, _ := range data {
-			data[sample][col] = (data[sample][col] - mean) / stddev
-		}
-	}
-}
+// 		for sample, _ := range data {
+// 			data[sample][col] = (data[sample][col] - mean) / stddev
+// 		}
+// 	}
+// }
 
 // preprocess reads data.csv & standardizes data
 func preprocess(dataPath string) [][]float32 {
 	data := readCsv(dataPath)
 	checkData(data, dataPath)
-	standardize(data)
+	// standardize(data)
 	fmt.Printf("Data loaded from: %v\n\n", dataPath)
 	return data
 }

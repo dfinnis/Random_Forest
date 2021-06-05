@@ -24,7 +24,7 @@ func split(data [][]float32) (train_set [][]float32, test_set [][]float32) {
 
 // splitData shuffles data & creates training & test sets
 func splitData(data [][]float32 /*, flags flags*/) (train_set, test_set [][]float32) {
-	shuffle(data)
+	// shuffle(data) // seed!
 	train_set, test_set = split(data)
 	printSplit(len(train_set), len(test_set))
 	return

@@ -45,10 +45,14 @@ func initForest() forest {
 }
 
 func sortSet(set [][]float32, feature int) [][]float32 {
-	sort.SliceStable(set, func(i, j int) bool {
+	sort.Slice(set, func(i, j int) bool {
 		return set[i][feature] < set[j][feature]
 	})
-	return set
+	var sorted [][]float32
+	for _, sample := range set {
+		sorted = append(sorted, sample)
+	}
+	return sorted
 }
 
 func giniImpurity(set [][]float32) float32 {
@@ -64,7 +68,17 @@ func giniImpurity(set [][]float32) float32 {
 }
 
 func splitFeature(set [][]float32, feature int) (float32, float32, [][]float32, [][]float32) {
+	// for i := 0; i < len(set); i++ { /////////////
+	// 	fmt.Printf("set[%v]: %v\n", i, set[i][1]) ////////
+	// } /////////////
+	// fmt.Printf("\n") ////////
 	set = sortSet(set, feature)
+	// for i := 0; i < len(set); i++ { /////////////
+	// 	fmt.Printf("set[%v]: %v\n", i, set[i][1]) ////////
+	// } /////////////
+	// fmt.Printf("\n") ////////
+	// os.Exit(1) ///////////////////
+
 	bestImpurity := (giniImpurity(set[:1]) * (float32(1) / float32(len(set)))) + (giniImpurity(set[1:]) * (float32(len(set)-(1)) / float32(len(set))))
 	bestSplit := (set[0][feature] + set[1][feature]) / 2
 	var bestLeft [][]float32
@@ -81,6 +95,16 @@ func splitFeature(set [][]float32, feature int) (float32, float32, [][]float32, 
 			bestRight = dataRight
 		}
 	}
+	// for i := 0; i < len(bestLeft); i++ { /////////////
+	// 	fmt.Printf("bestLeft[%v]: %v\n", i, bestLeft[i][1]) ////////
+	// } /////////////
+	// fmt.Printf("\n")                      ////////
+	// for i := 0; i < len(bestRight); i++ { /////////////
+	// 	fmt.Printf("bestRight[%v]: %v\n", i, bestRight[i][1]) ////////
+	// } /////////////
+	// fmt.Printf("\n") ////////
+	// os.Exit(1)       ///////////////////
+
 	// fmt.Printf("bestImpurity: %v\n", bestImpurity) //////////////
 	// fmt.Printf("bestSplit: %v\n\n", bestSplit)     //////////////
 	return bestImpurity, bestSplit, bestLeft, bestRight
@@ -94,7 +118,12 @@ func recordLeaf(current *node, treeInfo *treeInfo) {
 	}
 	treeInfo.samples += float32(len(current.data))
 	treeInfo.impurity += current.impurity
-	fmt.Printf("dignosis: %-5v  correct: %3v / %v\n", current.diagnosis, current.accuracy*float32(len(current.data)), len(current.data)) ///////////
+
+	for i := 0; i < len(current.data); i++ { /////////////
+		// fmt.Printf("current.data[%v]: %v\n", i, current.data[i][1]) ////////
+	} /////////////
+
+	// fmt.Printf("dignosis: %-5v  correct: %3v / %v\n", current.diagnosis, current.accuracy*float32(len(current.data)), len(current.data)) ///////////
 }
 
 func splitNode(current *node, currentDepth, depth int, treeInfo *treeInfo) {
@@ -143,11 +172,31 @@ func splitNode(current *node, currentDepth, depth int, treeInfo *treeInfo) {
 			bestSplit = split
 			bestLeft = left
 			bestRight = right
+			// fmt.Printf("%vimpurity: %v%v\n", BOLD, impurity, RESET) ////////////
+			// for i := 0; i < len(bestLeft); i++ { /////////////
+			// 	fmt.Printf("bestLeft[%v]: %v\n", i, bestLeft[i][1]) ////////
+			// } /////////////
+			// fmt.Printf("\n")                      ////////
+			// for i := 0; i < len(bestRight); i++ { /////////////
+			// 	fmt.Printf("bestRight[%v]: %v\n", i, bestRight[i][1]) ////////
+			// } /////////////
+			// fmt.Printf("\n") ////////
 		}
 		if impurity == 0 {
 			break
 		}
+		// break //////////////////////
 	}
+	// for i := 0; i < len(bestLeft); i++ { /////////////
+	// 	fmt.Printf("bestLeft[%v]: %v\n", i, bestLeft[i][1]) ////////
+	// } /////////////
+	// fmt.Printf("\n")                      ////////
+	// for i := 0; i < len(bestRight); i++ { /////////////
+	// 	fmt.Printf("bestRight[%v]: %v\n", i, bestRight[i][1]) ////////
+	// } /////////////
+	// fmt.Printf("\n") ////////
+	// os.Exit(1)       ///////////////////
+
 	// fmt.Printf("bestFeature: %v\n", bestFeature)   /////////
 	// fmt.Printf("bestImpurity: %v\n", bestImpurity) /////////
 	// fmt.Printf("bestSplit: %v\n\n", bestSplit)     /////////
@@ -162,11 +211,31 @@ func splitNode(current *node, currentDepth, depth int, treeInfo *treeInfo) {
 	current.feature = bestFeature
 	current.split = bestSplit
 	// printNode(current, depth) ////////////////////////????????
+	// for i := 0; i < len(bestLeft); i++ { /////////////
+	// 	fmt.Printf("bestLeft[%v]: %v\n", i, bestLeft[i][1]) ////////
+	// } /////////////
+	// fmt.Printf("\n")                      ////////
+	// for i := 0; i < len(bestRight); i++ { /////////////
+	// 	fmt.Printf("bestRight[%v]: %v\n", i, bestRight[i][1]) ////////
+	// } /////////////
+	// fmt.Printf("\n") ////////
+	// os.Exit(1)       ///////////////////
 
 	current.childLeft = &node{}
 	current.childRight = &node{}
 	current.childLeft.data = bestLeft
 	current.childRight.data = bestRight
+
+	// for i := 0; i < len(current.childLeft.data); i++ { /////////////
+	// 	fmt.Printf("current.childLeft.data[%v]: %v\n", i, current.childLeft.data[i][1]) ////////
+	// } /////////////
+	// fmt.Printf("\n")                                    ////////
+	// for i := 0; i < len(current.childRight.data); i++ { /////////////
+	// 	fmt.Printf("current.childRight.data[%v]: %v\n", i, current.childRight.data[i][1]) ////////
+	// } /////////////
+	// fmt.Printf("\n") ////////
+	// os.Exit(1)       ///////////////////
+
 	splitNode(current.childLeft, currentDepth+1, depth, treeInfo)
 	splitNode(current.childRight, currentDepth+1, depth, treeInfo)
 }
@@ -181,6 +250,6 @@ func train(forest forest, train_set, test_set [][]float32, flags flags) {
 	treeInfo.impurity /= float32(treeInfo.leafs)
 	treeInfos = append(treeInfos, treeInfo)
 	printForest(treeInfos)
-	printTree(&forest.trees[0], 0) ///////////
+	// printTree(&forest.trees[0], 0) ///////////
 	printTrain(forest, train_set, test_set)
 }

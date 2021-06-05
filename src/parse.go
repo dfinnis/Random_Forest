@@ -63,7 +63,7 @@ func parseArg() flags {
 	args := os.Args[1:]
 	if len(args) == 0 {
 		return flags
-	} else if len(args) > 2 {
+	} else if len(args) > 3 {
 		usageError("Too many arguments: ", strconv.Itoa(len(args)))
 	}
 
