@@ -204,38 +204,18 @@ func splitNode(current *node, currentDepth, depth int, treeInfo *treeInfo) {
 	if len(bestLeft) == 0 || len(bestRight) == 0 {
 		recordLeaf(current, treeInfo)
 		// fmt.Printf("len(bestLeft) == 0 || len(bestRight) == 0\n") ////////////
-		// printNode(current, depth)                                 ////////////////////////????????
 		return
 	}
 	current.impurity = bestImpurity
 	current.feature = bestFeature
 	current.split = bestSplit
-	// printNode(current, depth) ////////////////////////????????
-	// for i := 0; i < len(bestLeft); i++ { /////////////
-	// 	fmt.Printf("bestLeft[%v]: %v\n", i, bestLeft[i][1]) ////////
-	// } /////////////
-	// fmt.Printf("\n")                      ////////
-	// for i := 0; i < len(bestRight); i++ { /////////////
-	// 	fmt.Printf("bestRight[%v]: %v\n", i, bestRight[i][1]) ////////
-	// } /////////////
-	// fmt.Printf("\n") ////////
-	// os.Exit(1)       ///////////////////
 
 	current.childLeft = &node{}
 	current.childRight = &node{}
 	current.childLeft.data = bestLeft
 	current.childRight.data = bestRight
 
-	// for i := 0; i < len(current.childLeft.data); i++ { /////////////
-	// 	fmt.Printf("current.childLeft.data[%v]: %v\n", i, current.childLeft.data[i][1]) ////////
-	// } /////////////
-	// fmt.Printf("\n")                                    ////////
-	// for i := 0; i < len(current.childRight.data); i++ { /////////////
-	// 	fmt.Printf("current.childRight.data[%v]: %v\n", i, current.childRight.data[i][1]) ////////
-	// } /////////////
-	// fmt.Printf("\n") ////////
-	// os.Exit(1)       ///////////////////
-
+	// printNode(current, current.depth)  ////////////////////////????????
 	splitNode(current.childLeft, currentDepth+1, depth, treeInfo)
 	splitNode(current.childRight, currentDepth+1, depth, treeInfo)
 }
@@ -250,6 +230,6 @@ func train(forest forest, train_set, test_set [][]float32, flags flags) {
 	treeInfo.impurity /= float32(treeInfo.leafs)
 	treeInfos = append(treeInfos, treeInfo)
 	printForest(treeInfos)
-	// printTree(&forest.trees[0], 0) ///////////
+	printTree(&forest.trees[0]) ///////////
 	printTrain(forest, train_set, test_set)
 }

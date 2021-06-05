@@ -10,9 +10,7 @@ func truthTally(predictions, truth []bool) (tp, fn, fp, tn uint) {
 	// var tn uint // True Negative		// Predicted False & Is False
 
 	for i := 0; i < len(predictions); i++ {
-		// fmt.Printf("%-3v prediction: %-5v, truth: %v\n", i, predictions[i], truth[i]) ///////////
 		if truth[i] { // Is True
-			// fmt.Printf("Is True\n") ///////////
 			if predictions[i] { // Predicted True
 				tp += 1
 			} else { // Predicted False
@@ -73,7 +71,7 @@ func predictTally(forest forest, data [][]float32) (tp, fn, fp, tn uint) {
 	// for i := 0; i < len(predictions); i++ {
 	// 	fmt.Printf("%-3v prediction: %-5v, truth: %v\n", i, predictions[i], truth[i])
 	// }
-	fmt.Printf("\n") //////////////
+	// fmt.Printf("\n") //////////////
 	return truthTally(predictions, truth)
 }
 

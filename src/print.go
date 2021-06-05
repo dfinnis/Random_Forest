@@ -28,7 +28,7 @@ func printSplit(train_set, test_set int) {
 	fmt.Printf("+--------------+---------+\n\n")
 }
 
-func printNode(current *node, depth int) {
+func printNode(current *node) {
 
 	index := [31]string{"None (leaf)", "Radius Mean", "Texture Mean", "Perimeter Mean", "Area Mean", "Smoothness Mean", "Compactness Mean", "Concavity Mean", "Concave points Mean", "Symmetry Mean", "Fractal dimension Mean", "Radius se", "Texture se", "Perimeter se", "Area se", "Smoothness se", "Compactness se", "Concavity se", "Concave points se", "Symmetry se", "Fractal dimension se", "Radius Worst", "Texture Worst", "Perimeter Worst", "Area Worst", "Smoothness Worst", "Compactness Worst", "Concavity Worst", "Concave points Worst", "Symmetry Worst", "Fractal dimension Worst"} // data.csv column titles
 
@@ -41,7 +41,7 @@ func printNode(current *node, depth int) {
 		diagnosis = true
 	}
 
-	fmt.Printf("Depth: %v\n", depth)
+	fmt.Printf("Depth: %v\n", current.depth)
 	fmt.Printf("+-----------+-------------------------+\n")
 	fmt.Printf("| Feature   | %-23v %v |\n", index[current.feature], current.feature)
 	if current.split == 0 {
@@ -64,13 +64,13 @@ func printNode(current *node, depth int) {
 	// } /////////////
 }
 
-func printTree(current *node, depth int) {
-	printNode(current, depth)
+func printTree(current *node) {
+	printNode(current)
 	if current.childLeft != nil {
-		printTree(current.childLeft, depth+1)
+		printTree(current.childLeft)
 	}
 	if current.childRight != nil {
-		printTree(current.childRight, depth+1)
+		printTree(current.childRight)
 	}
 	// fmt.Printf("\n\n") ////////
 }
