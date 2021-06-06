@@ -7,6 +7,8 @@ const BOLD = "\x1B[1m"
 const UNDERLINE = "\x1B[4m"
 const RED = "\x1B[31m"
 const GREEN = "\x1B[32m"
+const BLUE = "\x1B[34m"
+const CYAN = "\x1B[36m"
 
 // printHeader prints intro
 func printHeader(flags flags) {
@@ -32,36 +34,33 @@ func printNode(current *node) {
 
 	index := [31]string{"None (leaf)", "Radius Mean", "Texture Mean", "Perimeter Mean", "Area Mean", "Smoothness Mean", "Compactness Mean", "Concavity Mean", "Concave points Mean", "Symmetry Mean", "Fractal dimension Mean", "Radius se", "Texture se", "Perimeter se", "Area se", "Smoothness se", "Compactness se", "Concavity se", "Concave points se", "Symmetry se", "Fractal dimension se", "Radius Worst", "Texture Worst", "Perimeter Worst", "Area Worst", "Smoothness Worst", "Compactness Worst", "Concavity Worst", "Concave points Worst", "Symmetry Worst", "Fractal dimension Worst"} // data.csv column titles
 
-	var sum float32
+	var malignant float32
 	for i := 0; i < len(current.data); i++ {
-		sum += current.data[i][0]
-	}
-	var diagnosis bool
-	if sum/float32(len(current.data)) > 0.5 {
-		diagnosis = true
+		malignant += current.data[i][0]
 	}
 
-	fmt.Printf("Depth: %v\n", current.depth)
-	fmt.Printf("+-----------+-------------------------+\n")
-	fmt.Printf("| Feature   | %-23v %v |\n", index[current.feature], current.feature)
-	if current.split == 0 {
-		fmt.Printf("| Split     | None (leaf)             |\n")
+	fmt.Printf("+-----------+------------------------------+\n")
+	if current.depth == 0 {
+		fmt.Printf("| Depth     | %v0%v - %vRoot                     %v|\n", BOLD, RESET, CYAN, RESET)
+	} else if current.feature == 0 {
+		fmt.Printf("| Depth     | %v%v%v - %vLeaf                     %v|\n", BOLD, current.depth, RESET, BLUE, RESET)
 	} else {
-		fmt.Printf("| Split     | %-23v |\n", current.split)
+		fmt.Printf("| Depth     | %v%-28v %v|\n", BOLD, current.depth, RESET)
 	}
-	fmt.Printf("| Gini      | %-23v |\n", giniImpurity(current.data))
-	fmt.Printf("| Samples   | %-23v |\n", len(current.data))
-	fmt.Printf("| Value     | %-3v, %-18v |\n", len(current.data)-int(sum), sum)
-	if diagnosis {
-		fmt.Printf("| Diagnosis |%v Malignant               %v|\n", RED, RESET)
-	} else {
-		fmt.Printf("| Diagnosis |%v Benign                  %v|\n", GREEN, RESET)
-	}
-	fmt.Printf("+-----------+-------------------------+\n\n")
 
-	// for i := 0; i < len(current.data); i++ { /////////////
-	// 	fmt.Printf("data[%v]: %v\n", i, current.data[i][1]) ////////
-	// } /////////////
+	if current.feature != 0 {
+		fmt.Printf("| Feature   | %-2v - %-23v |\n", current.feature, index[current.feature])
+		fmt.Printf("| Split     | %-28v |\n", current.split)
+	}
+	fmt.Printf("| Gini      | %-28v |\n", giniImpurity(current.data))
+	fmt.Printf("| Samples   | %-28v |\n", len(current.data))
+	fmt.Printf("| Value     | %v%-3v%v, %v%-23v%v |\n", GREEN, len(current.data)-int(malignant), RESET, RED, malignant, RESET)
+	if current.diagnosis {
+		fmt.Printf("| Diagnosis |%v Malignant                    %v|\n", RED, RESET)
+	} else {
+		fmt.Printf("| Diagnosis |%v Benign                       %v|\n", GREEN, RESET)
+	}
+	fmt.Printf("+-----------+------------------------------+\n\n")
 }
 
 func printTree(current *node) {
