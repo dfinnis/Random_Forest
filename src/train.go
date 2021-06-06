@@ -87,7 +87,7 @@ func splitFeature(set [][]float32, feature int) (float32, float32, [][]float32, 
 	return bestImpurity, bestSplit, bestLeft, bestRight
 }
 
-func recordLeaf(current *node, treeInfo *treeInfo) {
+func recordLeaf(current *node, treeInfo *treeInfo, flagF bool) {
 	treeInfo.leafs += 1
 	if current.depth > treeInfo.depth {
 		treeInfo.depth = current.depth
@@ -95,11 +95,12 @@ func recordLeaf(current *node, treeInfo *treeInfo) {
 	}
 	treeInfo.samples += float32(len(current.data))
 	treeInfo.impurity += current.impurity
-
-	printNode(current) ////////////////////////////
+	if flagF {
+		printNode(current) ////////////////////////////
+	}
 }
 
-func splitNode(current *node, currentDepth, depth int, treeInfo *treeInfo) {
+func splitNode(current *node, currentDepth, depth int, flagF bool, treeInfo *treeInfo) {
 	treeInfo.nodes += 1
 	current.depth = currentDepth
 	current.impurity = giniImpurity(current.data)
@@ -119,7 +120,7 @@ func splitNode(current *node, currentDepth, depth int, treeInfo *treeInfo) {
 
 	if currentDepth >= depth {
 		// fmt.Printf("depth <= 0\n") ////////////
-		recordLeaf(current, treeInfo)
+		recordLeaf(current, treeInfo, flagF)
 		return
 	}
 
@@ -131,7 +132,7 @@ func splitNode(current *node, currentDepth, depth int, treeInfo *treeInfo) {
 
 	if bestImpurity == 0 {
 		// fmt.Printf("current.impurity == 0\n") ////////////
-		recordLeaf(current, treeInfo)
+		recordLeaf(current, treeInfo, flagF)
 		return
 	}
 	for feature := 1; feature < len(current.data[0]); feature++ {
@@ -150,7 +151,7 @@ func splitNode(current *node, currentDepth, depth int, treeInfo *treeInfo) {
 
 	if len(bestLeft) == 0 || len(bestRight) == 0 {
 		// fmt.Printf("len(bestLeft): %v  len(bestRight): %v\n", len(bestLeft), len(bestRight)) ////////////
-		recordLeaf(current, treeInfo)
+		recordLeaf(current, treeInfo, flagF)
 		return
 	}
 	current.impurity = bestImpurity
@@ -162,10 +163,12 @@ func splitNode(current *node, currentDepth, depth int, treeInfo *treeInfo) {
 	current.childLeft.data = bestLeft
 	current.childRight.data = bestRight
 
-	printNode(current) ////////////////////////////
+	if flagF {
+		printNode(current) ////////////////////////////
+	}
 
-	splitNode(current.childLeft, currentDepth+1, depth, treeInfo)
-	splitNode(current.childRight, currentDepth+1, depth, treeInfo)
+	splitNode(current.childLeft, currentDepth+1, depth, flagF, treeInfo)
+	splitNode(current.childRight, currentDepth+1, depth, flagF, treeInfo)
 }
 
 func train(forest forest, train_set, test_set [][]float32, flags flags) {
@@ -173,7 +176,7 @@ func train(forest forest, train_set, test_set [][]float32, flags flags) {
 	forest.trees[0].data = train_set
 	var treeInfos []treeInfo
 	treeInfo := treeInfo{}
-	splitNode(&forest.trees[0], 0, flags.depth, &treeInfo)
+	splitNode(&forest.trees[0], 0, flags.depth, flags.flagF, &treeInfo)
 	treeInfo.samples /= float32(treeInfo.leafs)
 	treeInfo.impurity /= float32(treeInfo.leafs)
 	treeInfos = append(treeInfos, treeInfo)

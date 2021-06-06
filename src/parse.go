@@ -10,6 +10,7 @@ type flags struct {
 	dataPath    string
 	dataPathSet bool
 	flagQ       bool
+	flagF       bool
 	depth       int // tree depth
 	// size        int    // number of trees
 }
@@ -72,6 +73,8 @@ func parseArg() flags {
 			printUsage()
 		} else if args[i] == "-q" || args[i] == "--quiet" {
 			flags.flagQ = true
+		} else if args[i] == "-f" || args[i] == "--forest" {
+			flags.flagF = true
 		} else if args[i] == "-d" || args[i] == "--depth" {
 			i++
 			flags.depth = parseDepth(i, args)

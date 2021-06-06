@@ -9,7 +9,8 @@ import (
 func printUsage() {
 	fmt.Printf("\nUsage:\tgo build; ./Random_Forest [DATA.CSV] [-d DEPTH] [-h]\n\n")
 	fmt.Printf("    [-d]    (--depth)        Provide DEPTH integer, tree depth\n")
-	fmt.Printf("    [-q]    (--quiet)        Quiet that shit down\n") //// shit!!!
+	fmt.Printf("    [-q]    (--quiet)        Quiet that shit down\n")              //// shit!!!
+	fmt.Printf("    [-f]    (--forest)       Print forest, trees, node by node\n") //// shit!!!
 	fmt.Printf("    [-h]    (--help)         Show usage\n\n")
 	os.Exit(1)
 }
