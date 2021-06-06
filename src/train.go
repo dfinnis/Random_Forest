@@ -22,7 +22,6 @@ type node struct {
 	childRight *node
 	data       [][]float32
 	diagnosis  bool // majority vote
-	accuracy   float32
 }
 
 type forest struct {
@@ -111,11 +110,6 @@ func splitNode(current *node, currentDepth, depth int, flagF bool, treeInfo *tre
 	}
 	if sum/float32(len(current.data)) > 0.5 {
 		current.diagnosis = true
-	}
-	if current.diagnosis {
-		current.accuracy = sum / float32(len(current.data))
-	} else {
-		current.accuracy = 1 - (sum / float32(len(current.data)))
 	}
 
 	if currentDepth >= depth {
