@@ -7,11 +7,12 @@ import (
 
 // flags contains all flags & arguments
 type flags struct {
-	dataPath    string
-	dataPathSet bool
-	depth       int // tree depth
-	flagF       bool
-	flagQ       bool
+	dataPath    string // data.csv
+	dataPathSet bool   // default?
+	depth       int    // tree depth
+	size        int    // number of trees
+	flagF       bool   // print forest
+	flagQ       bool   // quiet
 	// size        int    // number of trees
 }
 
@@ -20,6 +21,7 @@ func defaultConfig() flags {
 	flags := flags{}
 	flags.dataPath = "data.csv"
 	flags.depth = 5 // best number ??
+	flags.size = 2  // best number ??
 	return flags
 }
 
@@ -43,9 +45,10 @@ func parseDataPath(filepath string, flags flags) flags {
 }
 
 // parseDepth parses string to int, must be between 0 & 100000
-func parseDepth(i int, args []string) int {
+func parseDepth(args []string, i int) (int, int) {
+	i++
 	if i >= len(args) {
-		usageError("No depth number provided after -ep", "")
+		usageError("No depth integer provided after -d", "")
 	}
 	depth, err := strconv.Atoi(args[i])
 	if err != nil {
@@ -54,7 +57,23 @@ func parseDepth(i int, args []string) int {
 	if depth <= 0 || depth >= 100000 {
 		usageError("depth must be between 0 & 100000, given: ", args[i])
 	}
-	return depth
+	return depth, i
+}
+
+// parseSize parses string to int, must be between 0 & 100000
+func parseSize(args []string, i int) (int, int) {
+	i++
+	if i >= len(args) {
+		usageError("No size integer provided after -d", "")
+	}
+	size, err := strconv.Atoi(args[i])
+	if err != nil {
+		usageError("Bad size: ", args[i])
+	}
+	if size <= 0 || size >= 100000 {
+		usageError("size must be between 0 & 100000, given: ", args[i])
+	}
+	return size, i
 }
 
 // parseArg parses & returns arguments for flags
@@ -64,20 +83,21 @@ func parseArg() flags {
 	args := os.Args[1:]
 	if len(args) == 0 {
 		return flags
-	} else if len(args) > 3 {
+	} else if len(args) > 6 {
 		usageError("Too many arguments: ", strconv.Itoa(len(args)))
 	}
 
 	for i := 0; i < len(args); i++ {
 		if args[i] == "-h" || args[i] == "--help" {
 			printUsage()
-		} else if args[i] == "-q" || args[i] == "--quiet" {
-			flags.flagQ = true
+		} else if args[i] == "-d" || args[i] == "--depth" {
+			flags.depth, i = parseDepth(args, i)
+		} else if args[i] == "-s" || args[i] == "--size" {
+			flags.size, i = parseSize(args, i)
 		} else if args[i] == "-f" || args[i] == "--forest" {
 			flags.flagF = true
-		} else if args[i] == "-d" || args[i] == "--depth" {
-			i++
-			flags.depth = parseDepth(i, args)
+		} else if args[i] == "-q" || args[i] == "--quiet" {
+			flags.flagQ = true
 		} else {
 			flags = parseDataPath(args[i], flags)
 		}

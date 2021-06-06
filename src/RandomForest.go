@@ -10,7 +10,7 @@ func RandomForest() {
 	train_set, test_set := splitData(data /*, flags*/)
 
 	// Initialize
-	forest := initForest()
+	forest := forest{}
 
 	// Train
 	train(forest, train_set, test_set, flags)

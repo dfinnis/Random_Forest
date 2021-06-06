@@ -73,7 +73,13 @@ func printTree(current *node) {
 	if current.childRight != nil {
 		printTree(current.childRight)
 	}
-	fmt.Printf("\n\n") ////////
+}
+
+func printTrees(trees []node) {
+	for _, tree := range trees {
+		printTree(&tree)
+		fmt.Printf("\n\n")
+	}
 }
 
 // printForest prints info about trees
@@ -81,6 +87,7 @@ func printForest(treeInfos []treeInfo) {
 	fmt.Printf("+--------------+-------------------------+\n")
 	fmt.Printf("| Trees        | %v |\n", len(treeInfos))
 	fmt.Printf("+--------------+-------------------------+\n")
+	fmt.Printf("| Samples      | %v\n", treeInfos[0].samples)
 	fmt.Printf("| Depth        | %v\n", treeInfos[0].depth)
 	fmt.Printf("| Nodes        | %v\n", treeInfos[0].nodes)
 	fmt.Printf("| Leafs        | %v\n", treeInfos[0].leafs)

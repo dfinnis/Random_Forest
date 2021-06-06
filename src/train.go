@@ -2,15 +2,17 @@ package forest
 
 import (
 	"fmt"
+	"math/rand"
 	"sort"
 )
 
 type treeInfo struct {
-	nodes    uint
-	leafs    uint
-	samples  float32 // per leaf              min mean max?
-	impurity float32 // mean for leafs        min mean max?
-	depth    int     // deepest                  min mean max?
+	nodes       uint
+	leafs       uint
+	samples     int     // total
+	samplesLeaf float32 // per leaf              min mean max?
+	impurity    float32 // mean for leafs        min mean max?
+	depth       int     // deepest                  min mean max?
 }
 
 type node struct {
@@ -25,22 +27,7 @@ type node struct {
 }
 
 type forest struct {
-	// depth uint
-	// size  uint
 	trees []node
-}
-
-// // newNode initializes a node
-// func newNode(forest forest) forest {
-// 	node := node{}
-// 	forest.trees = append(forest.trees, node)
-// 	return forest
-// }
-
-func initForest() forest {
-	forest := forest{}
-	forest.trees = append(forest.trees, node{}) // root
-	return forest
 }
 
 func sortSet(set [][]float32, feature int) [][]float32 {
@@ -92,10 +79,17 @@ func recordLeaf(current *node, treeInfo *treeInfo, flagF bool) {
 		treeInfo.depth = current.depth
 
 	}
-	treeInfo.samples += float32(len(current.data))
+	treeInfo.samplesLeaf += float32(len(current.data))
 	treeInfo.impurity += current.impurity
-	if flagF {
-		printNode(current) ////////////////////////////
+}
+
+func diagnoseNode(current *node, currentDepth, depth int) {
+	var sum float32
+	for i := 0; i < len(current.data); i++ {
+		sum += current.data[i][0]
+	}
+	if sum/float32(len(current.data)) > 0.5 {
+		current.diagnosis = true
 	}
 }
 
@@ -104,13 +98,7 @@ func splitNode(current *node, currentDepth, depth int, flagF bool, treeInfo *tre
 	current.depth = currentDepth
 	current.impurity = giniImpurity(current.data)
 
-	var sum float32
-	for i := 0; i < len(current.data); i++ {
-		sum += current.data[i][0]
-	}
-	if sum/float32(len(current.data)) > 0.5 {
-		current.diagnosis = true
-	}
+	diagnoseNode(current, currentDepth, depth)
 
 	if currentDepth >= depth {
 		// fmt.Printf("depth <= 0\n") ////////////
@@ -157,24 +145,45 @@ func splitNode(current *node, currentDepth, depth int, flagF bool, treeInfo *tre
 	current.childLeft.data = bestLeft
 	current.childRight.data = bestRight
 
-	if flagF {
-		printNode(current) ////////////////////////////
-	}
-
 	splitNode(current.childLeft, currentDepth+1, depth, flagF, treeInfo)
 	splitNode(current.childRight, currentDepth+1, depth, flagF, treeInfo)
 }
 
+func splitSubset(forest forest, i int, train_set [][]float32) {
+	// forest.trees[i].data = train_set
+	// fmt.Printf("train_set[0]: %v", train_set[0]) ////////////////////
+	rand.Shuffle(len(train_set), func(i, j int) { train_set[i], train_set[j] = train_set[j], train_set[i] })
+	// fmt.Printf("train_set[0]: %v", train_set[0]) ///////////////
+	split := 0.5
+	var subset [][]float32
+	subset = append(subset, train_set[:int(float64(len(train_set))*split)]...)
+	fmt.Printf("subset[0]: %v", subset[0]) ////////////
+	fmt.Printf("\nlen(subset): %v  int(float64(len(train_set))*split): %v\n", len(subset), int(float64(len(train_set))*split))
+	forest.trees[i].data = subset
+}
+
 func train(forest forest, train_set, test_set [][]float32, flags flags) {
 	fmt.Printf("\n%v%vTrain Forest%v\n\n", BOLD, UNDERLINE, RESET)
-	forest.trees[0].data = train_set
 	var treeInfos []treeInfo
-	treeInfo := treeInfo{}
-	splitNode(&forest.trees[0], 0, flags.depth, flags.flagF, &treeInfo)
-	treeInfo.samples /= float32(treeInfo.leafs)
-	treeInfo.impurity /= float32(treeInfo.leafs)
-	treeInfos = append(treeInfos, treeInfo)
+
+	for i := 0; i < flags.size; i++ {
+		if flags.flagF {
+			fmt.Printf("\n\n")
+		}
+		// fmt.Printf("i: %v\n", i)                    //////////////
+		forest.trees = append(forest.trees, node{}) // root
+		treeInfo := treeInfo{}
+		splitSubset(forest, i, train_set)
+		treeInfo.samples = len(forest.trees[i].data)
+		// forest.trees[i].data = train_set
+		splitNode(&forest.trees[i], 0, flags.depth, flags.flagF, &treeInfo)
+		treeInfo.samplesLeaf /= float32(treeInfo.leafs)
+		treeInfo.impurity /= float32(treeInfo.leafs) // wrong!! needs weighting by number of samples !!!!!!!!!!!!!
+		treeInfos = append(treeInfos, treeInfo)
+	}
 	printForest(treeInfos)
-	// printTree(&forest.trees[0]) ///////////
+	if flags.flagF {
+		printTrees(forest.trees)
+	}
 	printTrain(forest, train_set, test_set)
 }
