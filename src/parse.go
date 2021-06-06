@@ -9,9 +9,9 @@ import (
 type flags struct {
 	dataPath    string
 	dataPathSet bool
-	flagQ       bool
-	flagF       bool
 	depth       int // tree depth
+	flagF       bool
+	flagQ       bool
 	// size        int    // number of trees
 }
 
@@ -19,7 +19,7 @@ type flags struct {
 func defaultConfig() flags {
 	flags := flags{}
 	flags.dataPath = "data.csv"
-	flags.depth = 2 // best number ??
+	flags.depth = 5 // best number ??
 	return flags
 }
 

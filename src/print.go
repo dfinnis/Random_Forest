@@ -73,7 +73,7 @@ func printTree(current *node) {
 	if current.childRight != nil {
 		printTree(current.childRight)
 	}
-	// fmt.Printf("\n\n") ////////
+	fmt.Printf("\n\n") ////////
 }
 
 // printForest prints info about trees
