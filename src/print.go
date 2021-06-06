@@ -30,6 +30,7 @@ func printSplit(train_set, test_set int) {
 	fmt.Printf("+--------------+---------+\n\n")
 }
 
+// printNode prints info for one node
 func printNode(current *node) {
 
 	index := [31]string{"None (leaf)", "Radius Mean", "Texture Mean", "Perimeter Mean", "Area Mean", "Smoothness Mean", "Compactness Mean", "Concavity Mean", "Concave points Mean", "Symmetry Mean", "Fractal dimension Mean", "Radius se", "Texture se", "Perimeter se", "Area se", "Smoothness se", "Compactness se", "Concavity se", "Concave points se", "Symmetry se", "Fractal dimension se", "Radius Worst", "Texture Worst", "Perimeter Worst", "Area Worst", "Smoothness Worst", "Compactness Worst", "Concavity Worst", "Concave points Worst", "Symmetry Worst", "Fractal dimension Worst"} // data.csv column titles
@@ -63,6 +64,7 @@ func printNode(current *node) {
 	fmt.Printf("+-----------+------------------------------+\n\n")
 }
 
+// printTree recursively explores & prints each node
 func printTree(current *node) {
 	printNode(current)
 	if current.childLeft != nil {
@@ -74,6 +76,7 @@ func printTree(current *node) {
 	// fmt.Printf("\n\n") ////////
 }
 
+// printForest prints info about trees
 func printForest(treeInfos []treeInfo) {
 	fmt.Printf("+--------------+-------------------------+\n")
 	fmt.Printf("| Trees        | %v |\n", len(treeInfos))
@@ -108,8 +111,8 @@ func getMetrics(tpUint, fnUint, fpUint, tnUint uint) (accuracy, precision, recal
 	return
 }
 
+// printTrain prints metrics & confusion matrix for training & test sets
 func printTrain(forest forest, train_set, test_set [][]float32) {
-	// printTree(&forest.trees[0], 0) ///////////
 	tpTrain, fnTrain, fpTrain, tnTrain := predictTally(forest, train_set)
 	tpTest, fnTest, fpTest, tnTest := predictTally(forest, test_set)
 
