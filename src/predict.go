@@ -1,6 +1,8 @@
 package forest
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // truthTally counts true & false, positives & negatives
 func truthTally(predictions, truth []bool) (tp, fn, fp, tn uint) {
@@ -31,28 +33,42 @@ func truthTally(predictions, truth []bool) (tp, fn, fp, tn uint) {
 func predictTally(forest forest, data [][]float32) (tp, fn, fp, tn uint) {
 	var predictions []bool
 	var truth []bool
-	tree := forest.trees[0]
-
 	for _, sample := range data {
-		node := tree
-		for {
-			// Predict at leaf
-			if node.feature == 0 {
-				predictions = append(predictions, node.diagnosis)
-
-				if sample[0] == 1 { // Malignant
-					truth = append(truth, true)
-				} else {
-					truth = append(truth, false)
+		var prediction []bool
+		for _, tree := range forest.trees {
+			node := tree
+			for {
+				// Predict at leaf
+				if node.feature == 0 {
+					prediction = append(prediction, node.diagnosis)
+					break
 				}
-				break
+				// Move deeper in Tree
+				if sample[node.feature] < node.split {
+					node = *node.childLeft
+				} else {
+					node = *node.childRight
+				}
 			}
-			// Move deeper in Tree
-			if sample[node.feature] < node.split {
-				node = *node.childLeft
-			} else {
-				node = *node.childRight
+		}
+		// Count votes
+		var count float32
+		for _, pred := range prediction {
+			if pred {
+				count += 1
 			}
+		}
+		if count/float32(len(prediction)) > 0.5 {
+			predictions = append(predictions, true)
+		} else {
+			predictions = append(predictions, false)
+		}
+
+		// Truth
+		if sample[0] == 1 { // Malignant
+			truth = append(truth, true)
+		} else {
+			truth = append(truth, false)
 		}
 	}
 	return truthTally(predictions, truth)

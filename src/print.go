@@ -181,12 +181,12 @@ func printForest(treeInfos []treeInfo) {
 	fmt.Printf("+--------------+------+------+------+\n")
 	fmt.Printf("|              | Min  | Mean | Max  |\n")
 	fmt.Printf("+--------------+------+------+------+\n")
-	fmt.Printf("| Depth        | %-4v | %1.3v | %-4v |\n", depthMin, depthMean, depthMax)
-	fmt.Printf("| Nodes        | %-4v | %1.3v | %-4v |\n", nodesMin, nodesMean, nodesMax)
-	fmt.Printf("| Leafs        | %-4v | %1.3v | %-4v |\n", leafsMin, leafsMean, leafsMax)
-	fmt.Printf("| Samples/Leaf | %1.3v | %1.3v | %1.3v |\n", samplesMin, samplesMean, samplesMax)
-	fmt.Printf("| Gini mean    | %-4v | %1.3v | %-4v |\n", impurityMin, impurityMean, impurityMax)
-	fmt.Printf("+--------------+-------------------------+\n\n")
+	fmt.Printf("| Depth        | %-4v | %-4v | %-4v |\n", depthMin, depthMean, depthMax)
+	fmt.Printf("| Nodes        | %-4v | %-4v | %-4v |\n", nodesMin, nodesMean, nodesMax)
+	fmt.Printf("| Leafs        | %-4v | %-4v | %-4v |\n", leafsMin, leafsMean, leafsMax)
+	fmt.Printf("| Samples/Leaf | %.4v | %.4v | %.4v |\n", samplesMin, samplesMean, samplesMax)
+	fmt.Printf("| Gini mean    | %-4v | %-4v | %-4v |\n", impurityMin, impurityMean, impurityMax)
+	fmt.Printf("+--------------+------+------+------+\n\n")
 }
 
 // getMetrics converts true & false, positives & negatives into metrics

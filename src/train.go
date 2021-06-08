@@ -149,8 +149,11 @@ func splitNode(current *node, currentDepth, depth int, flagF bool, treeInfo *tre
 	splitNode(current.childRight, currentDepth+1, depth, flagF, treeInfo)
 }
 
-func splitSubset(forest forest, i int, train_set [][]float32) {
+func splitSubset(forest forest, i int, train_set [][]float32, size int) {
 	split := 0.5 // proportion of training set given to each tree
+	if size == 1 {
+		split = 1
+	}
 	rand.Shuffle(len(train_set), func(i, j int) { train_set[i], train_set[j] = train_set[j], train_set[i] })
 	var subset [][]float32
 	subset = append(subset, train_set[:int(float64(len(train_set))*split)]...)
@@ -165,7 +168,7 @@ func train(forest forest, train_set, test_set [][]float32, flags flags) {
 		// fmt.Printf("i: %v\n", i)                    //////////////
 		forest.trees = append(forest.trees, node{}) // root
 		treeInfo := treeInfo{}
-		splitSubset(forest, i, train_set)
+		splitSubset(forest, i, train_set, flags.size)
 		treeInfo.samples = len(forest.trees[i].data)
 		splitNode(&forest.trees[i], 0, flags.depth, flags.flagF, &treeInfo)
 		treeInfo.samplesLeaf /= float32(treeInfo.leafs)
