@@ -99,9 +99,81 @@ func rangeDepth(treeInfos []treeInfo) (int, float32, int) {
 	return depthMin, depthMean, depthMax
 }
 
+func rangeNodes(treeInfos []treeInfo) (uint, float32, uint) {
+	nodesMin := treeInfos[0].nodes
+	nodesMax := treeInfos[0].nodes
+	var nodesTotal uint
+	for _, tree := range treeInfos {
+		nodesTotal += tree.nodes
+		if tree.nodes < nodesMin {
+			nodesMin = tree.nodes
+		}
+		if tree.nodes > nodesMax {
+			nodesMax = tree.nodes
+		}
+	}
+	nodesMean := float32(nodesTotal) / float32(len(treeInfos))
+	return nodesMin, nodesMean, nodesMax
+}
+
+func rangeLeafs(treeInfos []treeInfo) (uint, float32, uint) {
+	leafsMin := treeInfos[0].leafs
+	leafsMax := treeInfos[0].leafs
+	var leafsTotal uint
+	for _, tree := range treeInfos {
+		leafsTotal += tree.leafs
+		if tree.leafs < leafsMin {
+			leafsMin = tree.leafs
+		}
+		if tree.leafs > leafsMax {
+			leafsMax = tree.leafs
+		}
+	}
+	leafsMean := float32(leafsTotal) / float32(len(treeInfos))
+	return leafsMin, leafsMean, leafsMax
+}
+
+func rangeSamples(treeInfos []treeInfo) (float32, float32, float32) {
+	samplesMin := treeInfos[0].samplesLeaf
+	samplesMax := treeInfos[0].samplesLeaf
+	var samplesTotal float32
+	for _, tree := range treeInfos {
+		samplesTotal += tree.samplesLeaf
+		if tree.samplesLeaf < samplesMin {
+			samplesMin = tree.samplesLeaf
+		}
+		if tree.samplesLeaf > samplesMax {
+			samplesMax = tree.samplesLeaf
+		}
+	}
+	samplesMean := float32(samplesTotal) / float32(len(treeInfos))
+	return samplesMin, samplesMean, samplesMax
+}
+
+func rangeImpurity(treeInfos []treeInfo) (float32, float32, float32) {
+	impurityMin := treeInfos[0].impurity
+	impurityMax := treeInfos[0].impurity
+	var impurityTotal float32
+	for _, tree := range treeInfos {
+		impurityTotal += tree.impurity
+		if tree.impurity < impurityMin {
+			impurityMin = tree.impurity
+		}
+		if tree.impurity > impurityMax {
+			impurityMax = tree.impurity
+		}
+	}
+	impurityMean := float32(impurityTotal) / float32(len(treeInfos))
+	return impurityMin, impurityMean, impurityMax
+}
+
 // printForest prints info about trees
 func printForest(treeInfos []treeInfo) {
 	depthMin, depthMean, depthMax := rangeDepth(treeInfos)
+	nodesMin, nodesMean, nodesMax := rangeNodes(treeInfos)
+	leafsMin, leafsMean, leafsMax := rangeLeafs(treeInfos)
+	samplesMin, samplesMean, samplesMax := rangeSamples(treeInfos)
+	impurityMin, impurityMean, impurityMax := rangeImpurity(treeInfos)
 
 	fmt.Printf("+--------------+--------------------+\n")
 	fmt.Printf("| Trees        | %v |\n", len(treeInfos))
@@ -109,14 +181,11 @@ func printForest(treeInfos []treeInfo) {
 	fmt.Printf("+--------------+------+------+------+\n")
 	fmt.Printf("|              | Min  | Mean | Max  |\n")
 	fmt.Printf("+--------------+------+------+------+\n")
-	fmt.Printf("| Depth        | %v | %v | %v |\n", depthMin, depthMean, depthMax)
-	fmt.Printf("| Nodes        | %v\n", treeInfos[0].nodes)
-	fmt.Printf("| Leafs        | %v\n", treeInfos[0].leafs)
-	fmt.Printf("| Samples/Leaf | %v\n", treeInfos[0].samples)
-	fmt.Printf("| Gini mean    | %v\n", treeInfos[0].impurity)
-
-	// Samples / leaf     min mean max
-	// leaf gini          min mean max
+	fmt.Printf("| Depth        | %-4v | %1.3v | %-4v |\n", depthMin, depthMean, depthMax)
+	fmt.Printf("| Nodes        | %-4v | %1.3v | %-4v |\n", nodesMin, nodesMean, nodesMax)
+	fmt.Printf("| Leafs        | %-4v | %1.3v | %-4v |\n", leafsMin, leafsMean, leafsMax)
+	fmt.Printf("| Samples/Leaf | %1.3v | %1.3v | %1.3v |\n", samplesMin, samplesMean, samplesMax)
+	fmt.Printf("| Gini mean    | %-4v | %1.3v | %-4v |\n", impurityMin, impurityMean, impurityMax)
 	fmt.Printf("+--------------+-------------------------+\n\n")
 }
 
