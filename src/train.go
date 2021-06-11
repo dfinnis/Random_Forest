@@ -2,7 +2,6 @@ package forest
 
 import (
 	"fmt"
-	"math/rand"
 	"sort"
 )
 
@@ -30,6 +29,7 @@ type forest struct {
 	trees []node
 }
 
+// sortSet returns a copy of given data set sorted by given feature
 func sortSet(set [][]float32, feature int) [][]float32 {
 	var sorted [][]float32
 	sorted = append(sorted, set...)
@@ -39,6 +39,7 @@ func sortSet(set [][]float32, feature int) [][]float32 {
 	return sorted
 }
 
+// giniImpurity returns how pure the diagnosis is, 0 = pure
 func giniImpurity(set [][]float32) float32 {
 	var diagnosis float32
 	var i int
@@ -51,6 +52,7 @@ func giniImpurity(set [][]float32) float32 {
 	return impurity
 }
 
+// splitFeature finds the split for given feature which maximizes gini impurity
 func splitFeature(set [][]float32, feature int) (float32, float32, [][]float32, [][]float32) {
 	set = sortSet(set, feature)
 
@@ -73,6 +75,7 @@ func splitFeature(set [][]float32, feature int) (float32, float32, [][]float32, 
 	return bestImpurity, bestSplit, bestLeft, bestRight
 }
 
+// recordLeaf records info for forest statistics
 func recordLeaf(current *node, treeInfo *treeInfo, flagF bool) {
 	treeInfo.leafs += 1
 	if current.depth > treeInfo.depth {
@@ -83,6 +86,7 @@ func recordLeaf(current *node, treeInfo *treeInfo, flagF bool) {
 	treeInfo.impurity += current.impurity
 }
 
+// diagnoseNode chooses the majority diagnosis as prediction for node
 func diagnoseNode(current *node, currentDepth, depth int) {
 	var sum float32
 	for i := 0; i < len(current.data); i++ {
@@ -93,6 +97,7 @@ func diagnoseNode(current *node, currentDepth, depth int) {
 	}
 }
 
+// splitNode finds the feature & split value which maximizes gini impurity, recursively splits children
 func splitNode(current *node, currentDepth, depth int, flagF bool, treeInfo *treeInfo) {
 	treeInfo.nodes += 1
 	current.depth = currentDepth
@@ -149,17 +154,7 @@ func splitNode(current *node, currentDepth, depth int, flagF bool, treeInfo *tre
 	splitNode(current.childRight, currentDepth+1, depth, flagF, treeInfo)
 }
 
-func splitSubset(forest forest, i int, train_set [][]float32, size int) {
-	split := 0.5 // proportion of training set given to each tree
-	if size == 1 {
-		split = 1
-	}
-	rand.Shuffle(len(train_set), func(i, j int) { train_set[i], train_set[j] = train_set[j], train_set[i] })
-	var subset [][]float32
-	subset = append(subset, train_set[:int(float64(len(train_set))*split)]...)
-	forest.trees[i].data = subset
-}
-
+// train trains trees in the forest
 func train(forest forest, train_set, test_set [][]float32, flags flags) {
 	fmt.Printf("\n%v%vTrain Forest%v\n\n", BOLD, UNDERLINE, RESET)
 	var treeInfos []treeInfo

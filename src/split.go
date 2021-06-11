@@ -29,3 +29,15 @@ func splitData(data [][]float32 /*, flags flags*/) (train_set, test_set [][]floa
 	printSplit(len(train_set), len(test_set))
 	return
 }
+
+// splitSubset creates a random subset of the training set for each tree in the forest
+func splitSubset(forest forest, i int, train_set [][]float32, size int) {
+	split := 0.5 // proportion of training set given to each tree
+	if size == 1 {
+		split = 1
+	}
+	rand.Shuffle(len(train_set), func(i, j int) { train_set[i], train_set[j] = train_set[j], train_set[i] })
+	var subset [][]float32
+	subset = append(subset, train_set[:int(float64(len(train_set))*split)]...)
+	forest.trees[i].data = subset
+}
