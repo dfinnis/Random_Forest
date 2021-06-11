@@ -177,8 +177,8 @@ func printForest(treeInfos []treeInfo) {
 
 	fmt.Printf("+--------------+--------------------+\n")
 	fmt.Printf("|%v Trees        %v| %-18v |\n", BOLD, RESET, len(treeInfos))
-	fmt.Printf("|              |                    |\n")
-	fmt.Printf("|%v Samples/Tree %v| %-18v |\n", BOLD, RESET, treeInfos[0].samples)
+	// fmt.Printf("|              |                    |\n")
+	// fmt.Printf("|%v Samples/Tree %v| %-18v |\n", BOLD, RESET, treeInfos[0].samples)
 	fmt.Printf("+--------------+------+------+------+\n")
 	fmt.Printf("|              |%v Min  %v|%v Mean %v|%v Max  %v|\n", BOLD, RESET, BOLD, RESET, BOLD, RESET)
 	fmt.Printf("+--------------+------+------+------+\n")

@@ -3,6 +3,7 @@ package forest
 import (
 	"os"
 	"strconv"
+	"time"
 )
 
 // flags contains all flags & arguments
@@ -11,15 +12,17 @@ type flags struct {
 	dataPathSet bool   // default?
 	depth       int    // tree depth
 	size        int    // number of trees
+	seed        int64  // randomize seed
+	flagS       bool   // seed set?
 	flagF       bool   // print forest
 	flagQ       bool   // quiet
-	// size        int    // number of trees
 }
 
 // defaultConfig initializes default values
 func defaultConfig() flags {
 	flags := flags{}
 	flags.dataPath = "data.csv"
+	flags.seed = time.Now().UnixNano()
 	flags.depth = 5 // best number ??
 	flags.size = 2  // best number ??
 	return flags
@@ -64,16 +67,31 @@ func parseDepth(args []string, i int) (int, int) {
 func parseSize(args []string, i int) (int, int) {
 	i++
 	if i >= len(args) {
-		usageError("No size integer provided after -d", "")
+		usageError("No forest size integer provided after -t", "")
 	}
 	size, err := strconv.Atoi(args[i])
 	if err != nil {
-		usageError("Bad size: ", args[i])
+		usageError("Bad forest size: ", args[i])
 	}
 	if size <= 0 || size >= 100000 {
-		usageError("size must be between 0 & 100000, given: ", args[i])
+		usageError("forest size must be between 0 & 100000, given: ", args[i])
 	}
 	return size, i
+}
+
+// parseSeed converts arg string to int
+func parseSeed(args []string, i int, flags flags) (flags, int) {
+	i++
+	if i >= len(args) {
+		usageError("No seed provided after -s", "")
+	}
+	seed, err := strconv.Atoi(args[i])
+	if err != nil {
+		usageError("Bad seed: ", args[i])
+	}
+	flags.seed = int64(seed)
+	flags.flagS = true
+	return flags, i
 }
 
 // parseArg parses & returns arguments for flags
@@ -83,7 +101,7 @@ func parseArg() flags {
 	args := os.Args[1:]
 	if len(args) == 0 {
 		return flags
-	} else if len(args) > 6 {
+	} else if len(args) > 8 {
 		usageError("Too many arguments: ", strconv.Itoa(len(args)))
 	}
 
@@ -92,8 +110,10 @@ func parseArg() flags {
 			printUsage()
 		} else if args[i] == "-d" || args[i] == "--depth" {
 			flags.depth, i = parseDepth(args, i)
-		} else if args[i] == "-s" || args[i] == "--size" {
+		} else if args[i] == "-t" || args[i] == "--trees" {
 			flags.size, i = parseSize(args, i)
+		} else if args[i] == "-s" || args[i] == "--seed" {
+			flags, i = parseSeed(args, i, flags)
 		} else if args[i] == "-f" || args[i] == "--forest" {
 			flags.flagF = true
 		} else if args[i] == "-q" || args[i] == "--quiet" {
