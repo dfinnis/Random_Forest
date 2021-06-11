@@ -1,1 +1,3 @@
 -s seed random with time
+investigate errors with test set max depth gini = 0
+fix gini mean to include weighting by number of samples in leaf

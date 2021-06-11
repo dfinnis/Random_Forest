@@ -165,8 +165,8 @@ func train(forest forest, train_set, test_set [][]float32, flags flags) {
 	var treeInfos []treeInfo
 
 	for i := 0; i < flags.size; i++ {
-		// fmt.Printf("i: %v\n", i)                    //////////////
-		forest.trees = append(forest.trees, node{}) // root
+		fmt.Printf("%v Training tree %v %v/ %v\r", BOLD, i+1, RESET, flags.size) //////////////
+		forest.trees = append(forest.trees, node{})                              // root
 		treeInfo := treeInfo{}
 		splitSubset(forest, i, train_set, flags.size)
 		treeInfo.samples = len(forest.trees[i].data)

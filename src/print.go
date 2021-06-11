@@ -176,16 +176,29 @@ func printForest(treeInfos []treeInfo) {
 	impurityMin, impurityMean, impurityMax := rangeImpurity(treeInfos)
 
 	fmt.Printf("+--------------+--------------------+\n")
-	fmt.Printf("| Trees        | %v |\n", len(treeInfos))
-	fmt.Printf("| Samples/Tree | %v\n", treeInfos[0].samples)
+	fmt.Printf("|%v Trees        %v| %-18v |\n", BOLD, RESET, len(treeInfos))
+	fmt.Printf("|              |                    |\n")
+	fmt.Printf("|%v Samples/Tree %v| %-18v |\n", BOLD, RESET, treeInfos[0].samples)
 	fmt.Printf("+--------------+------+------+------+\n")
-	fmt.Printf("|              | Min  | Mean | Max  |\n")
+	fmt.Printf("|              |%v Min  %v|%v Mean %v|%v Max  %v|\n", BOLD, RESET, BOLD, RESET, BOLD, RESET)
 	fmt.Printf("+--------------+------+------+------+\n")
-	fmt.Printf("| Depth        | %-4v | %-4v | %-4v |\n", depthMin, depthMean, depthMax)
-	fmt.Printf("| Nodes        | %-4v | %-4v | %-4v |\n", nodesMin, nodesMean, nodesMax)
-	fmt.Printf("| Leafs        | %-4v | %-4v | %-4v |\n", leafsMin, leafsMean, leafsMax)
-	fmt.Printf("| Samples/Leaf | %.4v | %.4v | %.4v |\n", samplesMin, samplesMean, samplesMax)
-	fmt.Printf("| Gini mean    | %-4v | %-4v | %-4v |\n", impurityMin, impurityMean, impurityMax)
+	if depthMin == depthMax {
+		fmt.Printf("|%v        Depth %v| %-4v | %-4v | %-4v |\n", BOLD, RESET, depthMin, depthMean, depthMax)
+	} else {
+		fmt.Printf("|%v        Depth %v| %-4v | %-4.1f | %-4v |\n", BOLD, RESET, depthMin, depthMean, depthMax)
+	}
+	fmt.Printf("|              |      |      |      |\n")
+	fmt.Printf("|%v        Nodes %v| %-4v | %-4.1f | %-4v |\n", BOLD, RESET, nodesMin, nodesMean, nodesMax)
+	fmt.Printf("|              |      |      |      |\n")
+	fmt.Printf("|%v        Leafs %v| %-4v | %-4.1f | %-4v |\n", BOLD, RESET, leafsMin, leafsMean, leafsMax)
+	fmt.Printf("|              |      |      |      |\n")
+	if depthMax == 1 {
+		fmt.Printf("|%v Samples/Leaf %v| %-4.0f | %-4.0f | %-4.0f |\n", BOLD, RESET, samplesMin, samplesMean, samplesMax)
+	} else {
+		fmt.Printf("|%v Samples/Leaf %v| %-4.1f | %-4.1f | %-4.1f |\n", BOLD, RESET, samplesMin, samplesMean, samplesMax)
+	}
+	fmt.Printf("|              |      |      |      |\n")
+	fmt.Printf("|%v    Gini mean %v| %-4.2f | %-4.2f | %-4.2f |\n", BOLD, RESET, impurityMin, impurityMean, impurityMax)
 	fmt.Printf("+--------------+------+------+------+\n\n")
 }
 
