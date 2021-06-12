@@ -181,12 +181,9 @@ func printForest(treeInfos []treeInfo) {
 	samplesMin, samplesMean, samplesMax := rangeSamples(treeInfos)
 	impurityMin, impurityMean, impurityMax := rangeImpurity(treeInfos)
 
-	fmt.Printf("+--------------+--------------------+\n")
-	fmt.Printf("|%v Trees        %v| %-18v |\n", BOLD, RESET, len(treeInfos))
-	// fmt.Printf("|              |                    |\n")
 	// fmt.Printf("|%v Samples/Tree %v| %-18v |\n", BOLD, RESET, treeInfos[0].samples)
-	fmt.Printf("+--------------+------+------+------+\n")
-	fmt.Printf("|              |%v Min  %v|%v Mean %v|%v Max  %v|\n", BOLD, RESET, BOLD, RESET, BOLD, RESET)
+	fmt.Printf("%vTrees: %v%-7v +------+------+------+\n", BOLD, RESET, len(treeInfos))
+	fmt.Printf("               |%v Min  %v|%v Mean %v|%v Max  %v|\n", BOLD, RESET, BOLD, RESET, BOLD, RESET)
 	fmt.Printf("+--------------+------+------+------+\n")
 	if depthMin == depthMax {
 		fmt.Printf("|%v        Depth %v| %-4v | %-4v | %-4v |\n", BOLD, RESET, depthMin, depthMean, depthMax)
@@ -205,7 +202,7 @@ func printForest(treeInfos []treeInfo) {
 	}
 	fmt.Printf("|              |      |      |      |\n")
 	fmt.Printf("|%v    Gini mean %v| %-4.2f | %-4.2f | %-4.2f |\n", BOLD, RESET, impurityMin, impurityMean, impurityMax)
-	fmt.Printf("+--------------+------+------+------+\n\n")
+	fmt.Printf("+--------------+--------------------+\n\n")
 }
 
 // getMetrics converts true & false, positives & negatives into metrics
