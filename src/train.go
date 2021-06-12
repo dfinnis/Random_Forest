@@ -155,24 +155,29 @@ func splitNode(current *node, currentDepth, depth int, flagF bool, treeInfo *tre
 }
 
 // train trains trees in the forest
-func train(forest forest, train_set, test_set [][]float32, flags flags) {
+func train(train_set, test_set [][]float32, flags flags) forest {
 	fmt.Printf("\n%v%vTrain Forest%v\n\n", BOLD, UNDERLINE, RESET)
+	// Initialize
+	forest := forest{}
 	var treeInfos []treeInfo
 
 	for i := 0; i < flags.size; i++ {
-		fmt.Printf("%v Training tree %v %v/ %v\r", BOLD, i+1, RESET, flags.size) //////////////
-		forest.trees = append(forest.trees, node{})                              // root
+		fmt.Printf("%v Training tree: %v %v/ %v\r", BOLD, i+1, RESET, flags.size)
+		forest.trees = append(forest.trees, node{}) // root
 		treeInfo := treeInfo{}
 		splitSubset(forest, i, train_set, flags.size)
 		treeInfo.samples = len(forest.trees[i].data)
 		splitNode(&forest.trees[i], 0, flags.depth, flags.flagF, &treeInfo)
 		treeInfo.samplesLeaf /= float32(treeInfo.leafs)
-		treeInfo.impurity /= float32(treeInfo.leafs) // wrong!! needs weighting by number of samples !!!!!!!!!!!!!
 		treeInfos = append(treeInfos, treeInfo)
 	}
-	printForest(treeInfos)
+	if !flags.flagQ {
+		printForest(treeInfos)
+	}
 	if flags.flagF {
 		printTrees(forest.trees)
 	}
 	printTrain(forest, train_set, test_set)
+	fmt.Printf("?????????len(forest.trees): %v\n", len(forest.trees)) /////////////
+	return forest
 }
