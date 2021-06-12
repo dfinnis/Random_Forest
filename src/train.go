@@ -5,26 +5,29 @@ import (
 	"sort"
 )
 
+// treeInfo describes a tree
 type treeInfo struct {
-	nodes       uint
-	leafs       uint
-	samples     int     // total
-	samplesLeaf float32 // per leaf              min mean max?
-	impurity    float32 // mean for leafs        min mean max?
-	depth       int     // deepest                  min mean max?
+	nodes       uint    // total nodes in forest
+	leafs       uint    // total leafs in forest
+	samples     int     // total data samples
+	samplesLeaf float32 // samples per leaf mean
+	impurity    float32 // gini impurity mean for leafs
+	depth       int     // deepest
 }
 
+// node describes a node in a tree
 type node struct {
-	depth      int
-	feature    int // data column // uint8????!!!!!!!!!!!!!
-	impurity   float32
-	split      float32
-	childLeft  *node
-	childRight *node
-	data       [][]float32
-	diagnosis  bool // majority vote
+	depth      int         // current depth
+	feature    int         // data column
+	impurity   float32     // gini impurity
+	split      float32     // split value
+	childLeft  *node       // below split
+	childRight *node       // above split
+	data       [][]float32 // data samples
+	diagnosis  bool        // majority vote
 }
 
+// forest is a list of trees, pointer to root
 type forest struct {
 	trees []node
 }
@@ -106,7 +109,6 @@ func splitNode(current *node, currentDepth, depth int, flagF bool, treeInfo *tre
 	diagnoseNode(current, currentDepth, depth)
 
 	if currentDepth >= depth {
-		// fmt.Printf("depth <= 0\n") ////////////
 		recordLeaf(current, treeInfo, flagF)
 		return
 	}
@@ -118,7 +120,6 @@ func splitNode(current *node, currentDepth, depth int, flagF bool, treeInfo *tre
 	bestImpurity := current.impurity
 
 	if bestImpurity == 0 {
-		// fmt.Printf("current.impurity == 0\n") ////////////
 		recordLeaf(current, treeInfo, flagF)
 		return
 	}
@@ -136,11 +137,6 @@ func splitNode(current *node, currentDepth, depth int, flagF bool, treeInfo *tre
 		}
 	}
 
-	if len(bestLeft) == 0 || len(bestRight) == 0 {
-		// fmt.Printf("len(bestLeft): %v  len(bestRight): %v\n", len(bestLeft), len(bestRight)) ////////////
-		recordLeaf(current, treeInfo, flagF)
-		return
-	}
 	current.impurity = bestImpurity
 	current.feature = bestFeature
 	current.split = bestSplit
