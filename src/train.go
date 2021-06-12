@@ -152,7 +152,7 @@ func splitNode(current *node, currentDepth, depth int, flagF bool, treeInfo *tre
 }
 
 // train trains trees in the forest
-func train(train_set, test_set [][]float32, flags flags) forest {
+func train(train_set, test_set [][]float32, flags flags) /*forest*/ {
 	fmt.Printf("\n%v%vTrain Forest%v\n\n", BOLD, UNDERLINE, RESET)
 	// Initialize
 	forest := forest{}
@@ -181,5 +181,5 @@ func train(train_set, test_set [][]float32, flags flags) forest {
 		printTrees(forest.trees)
 	}
 	printTrain(forest, train_set, test_set)
-	return forest
+	// return forest
 }

@@ -24,10 +24,9 @@ func RandomForest() {
 	train_set, test_set := splitData(data /*, flags*/)
 
 	// Train
-	forest := train(train_set, test_set, flags)
+	train(train_set, test_set, flags)
+	// forest := train(train_set, test_set, flags) // for seperate predict
 
 	// Predict
-	predict(forest, test_set)
-
-	// printTree(&forest.trees[0], 0)
+	// predict(forest, test_set)
 }

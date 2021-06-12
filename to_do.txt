@@ -1,5 +1,7 @@
-subset split 2 by 2 covering all data?
-save/load forest
 test.sh
 readme.md
--t -p
+
+subset split 2 by 2 covering all data?
+
+-t -p?
+save/load forest?
