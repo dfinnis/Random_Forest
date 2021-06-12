@@ -161,6 +161,7 @@ func train(train_set, test_set [][]float32, flags flags) forest {
 	forest := forest{}
 	var treeInfos []treeInfo
 
+	// Train tree loop
 	for i := 0; i < flags.size; i++ {
 		fmt.Printf("%v Training tree: %v %v/ %v\r", BOLD, i+1, RESET, flags.size)
 		forest.trees = append(forest.trees, node{}) // root
@@ -171,6 +172,8 @@ func train(train_set, test_set [][]float32, flags flags) forest {
 		treeInfo.samplesLeaf /= float32(treeInfo.leafs)
 		treeInfos = append(treeInfos, treeInfo)
 	}
+
+	// Print
 	if !flags.flagQ {
 		printForest(treeInfos)
 	}
@@ -178,6 +181,5 @@ func train(train_set, test_set [][]float32, flags flags) forest {
 		printTrees(forest.trees)
 	}
 	printTrain(forest, train_set, test_set)
-	fmt.Printf("?????????len(forest.trees): %v\n", len(forest.trees)) /////////////
 	return forest
 }
