@@ -23,8 +23,8 @@ func defaultConfig() flags {
 	flags := flags{}
 	flags.dataPath = "data.csv"
 	flags.seed = time.Now().UnixNano()
-	flags.depth = 5 // best number ??
-	flags.size = 2  // best number ??
+	flags.depth = 42 // effectively infinity
+	flags.size = 100
 	return flags
 }
 
