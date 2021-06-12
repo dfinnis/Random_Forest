@@ -3,6 +3,7 @@ package forest
 import (
 	"fmt"
 	"sort"
+	"time"
 )
 
 // treeInfo describes a tree
@@ -156,6 +157,7 @@ func train(train_set, test_set [][]float32, flags flags) forest {
 	// Initialize
 	forest := forest{}
 	var treeInfos []treeInfo
+	start := time.Now()
 
 	// Train tree loop
 	for i := 0; i < flags.size; i++ {
@@ -170,6 +172,8 @@ func train(train_set, test_set [][]float32, flags flags) forest {
 	}
 
 	// Print
+	elapsed := time.Since(start)
+	fmt.Printf("Training time: %v      \n\n", elapsed)
 	if !flags.flagQ {
 		printForest(treeInfos)
 	}
