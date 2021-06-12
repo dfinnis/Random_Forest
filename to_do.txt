@@ -1,5 +1,4 @@
 subset split 2 by 2 covering all data?
-fix gini mean to include weighting by number of samples in leaf
 save/load forest
 test.sh
 readme.md

@@ -83,7 +83,7 @@ func recordLeaf(current *node, treeInfo *treeInfo, flagF bool) {
 
 	}
 	treeInfo.samplesLeaf += float32(len(current.data))
-	treeInfo.impurity += current.impurity
+	treeInfo.impurity += current.impurity * (float32(len(current.data)) / float32(treeInfo.samples))
 }
 
 // diagnoseNode chooses the majority diagnosis as prediction for node
