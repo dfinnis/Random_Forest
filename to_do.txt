@@ -1,7 +1,0 @@
-test.sh
-readme.md
-
-subset split 2 by 2 covering all data?
-
--t -p?
-save/load forest?
