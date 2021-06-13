@@ -12,7 +12,7 @@ func printUsage() {
 	fmt.Printf("    [-t]    (--trees)        Provide SIZE integer, number of trees in forest\n")
 	fmt.Printf("    [-s]    (--seed)         Provide SEED integer for randomization e.g. -s 42\n")
 	fmt.Printf("    [-f]    (--forest)       Print forest, trees, node by node\n")
-	fmt.Printf("    [-q]    (--quiet)        Quiet that shit down\n") //// shit!!!
+	fmt.Printf("    [-q]    (--quiet)        Don't print seed or forest statistics\n")
 	fmt.Printf("    [-h]    (--help)         Show usage\n\n")
 	os.Exit(1)
 }
