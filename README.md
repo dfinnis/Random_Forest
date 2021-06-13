@@ -22,29 +22,34 @@ Alternatively, build & run the binary. <br>
 
 Default behaviour is to split the data into training & test sets, train a random forest on the training set, & show metrics for training & test sets.
 
+<img src="https://github.com/dfinnis/Random_Forest/blob/master/img/default.png" width="400">
+
 
 ## Flags
 
 ### -d --depth
 
+Provide addtional argument DEPTH integer, maximum tree depth.
+
+Default depth is 42, in essence infinite as a tree categorizes samples perfectly (leaf gini mean = 0) before a depth of 10.
+Random forests with infinite depth overfit the training set, as shown in the deafult example above with perfect accuracy on the training set.
+To avoid overfitting, & increase accuracy for the test set, a lower depth can be set. For example:
+
 ```go run main.go -d 5```
 
-Provide addtional argument DEPTH integer, maximum tree depth.
-The default is 42, in essence infinite as the tree categorizes the training set perfectly (leaf gini mean = 0) before a depth of 10.
+<img src="https://github.com/dfinnis/Random_Forest/blob/master/img/d.png" width="400">
 
 
 ### -t --trees
 
+Provide addtional argument SIZE integer, number of trees in the forest. The default is 100 trees. To create a forest with 1000 trees: <br>
 ```go run main.go -t 1000```
-
-Provide addtional argument SIZE integer, number of trees in the forest. The default is 100 trees.
 
 
 ### -s --seed
 
+Provide addtional argument SEED integer for randomization. for example: <br>
 ```go run main.go -s 42```
-
-Provide addtional argument SEED integer for randomization.
 
 This seeds the pseudo-randomization of shuffling & splitting of data.
 Thus a forest & set of predictions can be replicated exactly with a given seed.
@@ -53,18 +58,22 @@ The default seed is the current time.
 
 ### -f --forest
 
-```go run main.go -f -d 1 -s 2```
+Print forest, all trees, node by node. Let's see a simple example with 2 trees of depth 1:
 
-Print forest, trees, node by node.
+```go run main.go -f -d 1 -t 2```
+
+<img src="https://github.com/dfinnis/Random_Forest/blob/master/img/f.png" width="370">
 
 
 ### -q --quiet
 
-```go run main.go -q```
-
 Don't print seed or forest statistics.
+
+```go run main.go -q```
 
 
 ### data.csv
+
+Any non-flag argument will be read as data path. The default data path is data.csv.
 
 ```go run main.go data.csv```
