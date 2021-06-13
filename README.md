@@ -58,7 +58,7 @@ The default seed is the current time.
 
 ### -f --forest
 
-Print forest, all trees, node by node. Let's see a simple example with 2 trees of depth 1:
+Print forest, all trees, recursively node by node. Let's see a simple example with 2 trees of depth 1:
 
 ```go run main.go -f -d 1 -t 2```
 
