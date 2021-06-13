@@ -2,7 +2,7 @@
 
 A Random Forest that predicts whether a tumor is malignant or benign, implemented from scratch.
 
-I wanted to investigate the performance of a random forest in comparison with [a deep neural net I previously created](https://github.com/dfinnis/Multilayer_Perceptron). <br>
+I wanted to investigate the performance of a random forest in comparison with [a deep neural net I created](https://github.com/dfinnis/Multilayer_Perceptron). <br>
 It turns out a random forest performs as well as a deep neural net for this task.
 
 Based on the Wisconsin breast cancer diagnosis dataset.
