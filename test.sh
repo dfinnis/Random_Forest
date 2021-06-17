@@ -26,13 +26,14 @@ unit_test()
 
 	accuracyTrainTotal=0
 	accuracyTestTotal=0
+	depthMeanTotal=0
 	test=0
 
 	while [ $test -lt $CASES ]
 	do
 		printf "|\x1b[1m "
 		printf $DEPTH
-		printf "     \x1b[0m| "
+		printf "  \x1b[0m| "
 		printf "test "
 		printf $test
 		printf " / "
@@ -40,17 +41,21 @@ unit_test()
 		printf "\r"
 
 		output=$(eval "$cmd")
+
 		accuracyTrain=$(echo "$output" | grep Accuracy | cut -d "|" -f 3)
 		accuracyTest=$(echo "$output" | grep Accuracy | cut -d "|" -f 4)
+		depthMean=$(echo "$output" | grep Depth | cut -d "|" -f 4)
 
 		accuracyTrainTotal=$(echo "$accuracyTrainTotal + $accuracyTrain" | bc)
 		accuracyTestTotal=$(echo "$accuracyTestTotal + $accuracyTest" | bc)
+		depthMeanTotal=$(echo "$depthMeanTotal + $depthMean" | bc)
 
 		test=$(($test + 1))
 	done
 
 	accuracyTrainMean=$(echo "scale = 7; $accuracyTrainTotal / $CASES" | bc)
 	accuracyTestMean=$(echo "scale = 7; $accuracyTestTotal / $CASES" | bc)
+	depthMeanTotal=$(echo "scale = 1; $depthMeanTotal / $CASES" | bc)
 
 	if (( $(echo "$accuracyTestMean > $best_accuracy" | bc -l) ))
 	then
@@ -60,7 +65,9 @@ unit_test()
 
 	printf "|\x1b[1m "
 	printf $DEPTH
-	printf "     \x1b[0m| "
+	printf "  \x1b[0m| "
+	printf $depthMeanTotal
+	printf "  | "
 	printf $accuracyTrainMean
 	printf "     | "
 	printf $accuracyTestMean
@@ -68,11 +75,11 @@ unit_test()
 }
 
 #### -- Print Table -- ####
-echo "        +-----------------------------+"
-echo "        |\x1b[1m Accuracy Mean               \x1b[0m|"
-echo "+-------+--------------+--------------+"
-printf "|\x1b[1m Depth \x1b[0m|\x1b[1m Training Set \x1b[0m|\x1b[1m Test Set     \x1b[0m|\n"
-echo "+-------+--------------+--------------+"
+echo "+-----------+-----------------------------+"
+echo "|\x1b[1m Depth     \x1b[0m|\x1b[1m Accuracy Mean               \x1b[0m|"
+echo "+-----------+-----------------------------+"
+printf "|\x1b[1m -d \x1b[0m|\x1b[1m Mean \x1b[0m|\x1b[1m Training Set \x1b[0m|\x1b[1m Test Set     \x1b[0m|\n"
+echo "+----+------+--------------+--------------+"
 
 #### -- Depth -- ####
 depth=1
@@ -82,7 +89,7 @@ do
 	depth=$(($depth + 1))
 done
 
-echo "+-------+--------------+--------------+"
+echo "+----+------+--------------+--------------+"
 echo
 printf "Best Depth for Test Set Accuracy: "
 printf $best_depth
