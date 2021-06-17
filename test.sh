@@ -22,9 +22,6 @@ best_accuracy=0
 unit_test()
 {
 	DEPTH=$1
-	printf "|\x1b[1m "
-	printf $DEPTH
-	printf "     \x1b[0m| "
 	cmd="./Random_Forest -d $DEPTH"
 
 	accuracyTrainTotal=0
@@ -33,11 +30,14 @@ unit_test()
 
 	while [ $test -lt $CASES ]
 	do
-		printf " test "
+		printf "|\x1b[1m "
+		printf $DEPTH
+		printf "     \x1b[0m| "
+		printf "test "
 		printf $test
 		printf " / "
 		printf $CASES
-		printf "\033[12D" ## Move curor back 12 characters
+		printf "\r"
 
 		output=$(eval "$cmd")
 		accuracyTrain=$(echo "$output" | grep Accuracy | cut -d "|" -f 3)
@@ -58,6 +58,9 @@ unit_test()
 		best_depth=$DEPTH
 	fi
 
+	printf "|\x1b[1m "
+	printf $DEPTH
+	printf "     \x1b[0m| "
 	printf $accuracyTrainMean
 	printf "     | "
 	printf $accuracyTestMean
@@ -81,7 +84,7 @@ done
 
 echo "+-------+--------------+--------------+"
 echo
-printf "Best Depth for Test Set: "
+printf "Best Depth for Test Set Accuracy: "
 printf $best_depth
 echo
 echo
