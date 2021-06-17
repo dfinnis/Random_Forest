@@ -20,13 +20,15 @@ CASES=10
 unit_test()
 {
 	DEPTH=$1
-	# echo "Oh hi!" ##########
-	echo $DEPTH
+	printf "|\x1b[1m "
+	printf $DEPTH
+	printf "     \x1b[0m| "
 	cmd="./Random_Forest -d $DEPTH"
+
 	accuracyTrainTotal=0
 	accuracyTestTotal=0
-
 	test=0
+
 	while [ $test -lt $CASES ]
 	do
 		# echo $test
@@ -44,14 +46,22 @@ unit_test()
 		# echo $accuracyTest
 		test=$(($test + 1))
 	done
+
 	accuracyTrainMean=$(echo "scale = 7; $accuracyTrainTotal / $CASES" | bc)
 	accuracyTestMean=$(echo "scale = 7; $accuracyTestTotal / $CASES" | bc)
-	echo $accuracyTrainMean
-	echo $accuracyTestMean
-	echo ##########
+	printf $accuracyTrainMean
+	printf "     | "
+	printf $accuracyTestMean
+	printf "     |\n"
 }
 
 # unit_test 1
+echo "        +-----------------------------+"
+echo "        |\x1b[1m Accuracy                    \x1b[0m|"
+echo "+-------+--------------+--------------+"
+printf "|\x1b[1m Depth \x1b[0m|\x1b[1m Training Set \x1b[0m|\x1b[1m Test Set     \x1b[0m|\n"
+echo "+-------+--------------+--------------+"
+# echo "|%v Metric          %v|%v Training Set  %v|%v Test Set      %v|\n", BOLD, RESET, BOLD, RESET, BOLD, RESET)
 
 #### -- Depth -- ####
 depth=1
@@ -60,6 +70,8 @@ do
 	unit_test $depth
 	depth=$(($depth + 1))
 done
+echo "+-------+--------------+--------------+"
+echo
 
 #### -- Cleanup -- ####
 rm Random_Forest
