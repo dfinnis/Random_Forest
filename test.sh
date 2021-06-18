@@ -1,6 +1,10 @@
 #### -- Random Forest Test -- ####
 go build
 
+#### -- Config -- ####
+CASES=10
+
+
 #### -- Print Header -- ####
 RESET="\x1b[0m"
 BOLD="\x1b[1m"
@@ -10,10 +14,6 @@ printf "\E[H\E[2J" ## Clear screen
 printf $BOLD
 printf $ITALIC
 echo "Launching Random Forest Test...$RESET\n"
-
-
-#### -- Config -- ####
-CASES=10
 
 best_depth=0
 best_accuracy=0
@@ -31,14 +31,7 @@ unit_test()
 
 	while [ $test -lt $CASES ]
 	do
-		printf "|\x1b[1m "
-		printf $DEPTH
-		printf "  \x1b[0m| "
-		printf "test "
-		printf $test
-		printf " / "
-		printf $CASES
-		printf "\r"
+		printf "|\x1b[1m %-2d \x1b[0m| test %d / %d\r" $DEPTH $test $CASES
 
 		output=$(eval "$cmd")
 
@@ -63,22 +56,15 @@ unit_test()
 		best_depth=$DEPTH
 	fi
 
-	printf "|\x1b[1m "
-	printf $DEPTH
-	printf "  \x1b[0m| "
-	printf $depthMeanTotal
-	printf "  | "
-	printf $accuracyTrainMean
-	printf "     | "
-	printf $accuracyTestMean
-	printf "     |\n"
+	printf "|\x1b[1m %-2d \x1b[0m| %-4.1f | %-12f | %-12f |\n" $DEPTH $depthMeanTotal $accuracyTrainMean $accuracyTestMean
 }
 
 #### -- Print Table -- ####
+printf "Test Cases per Depth: %d\n\n" $CASES
 echo "+-----------+-----------------------------+"
 echo "|\x1b[1m Depth     \x1b[0m|\x1b[1m Accuracy Mean               \x1b[0m|"
 echo "+-----------+-----------------------------+"
-printf "|\x1b[1m -d \x1b[0m|\x1b[1m Mean \x1b[0m|\x1b[1m Training Set \x1b[0m|\x1b[1m Test Set     \x1b[0m|\n"
+echo "|\x1b[1m -d \x1b[0m|\x1b[1m Mean \x1b[0m|\x1b[1m Training Set \x1b[0m|\x1b[1m Test Set     \x1b[0m|"
 echo "+----+------+--------------+--------------+"
 
 #### -- Depth -- ####
@@ -91,11 +77,7 @@ done
 
 echo "+----+------+--------------+--------------+"
 echo
-printf "Best Depth for Test Set Accuracy: "
-printf $best_depth
-echo
-echo
-
+printf "Best Depth for Test Set Accuracy: %d\n\n" $best_depth
 
 #### -- Cleanup -- ####
 rm Random_Forest
