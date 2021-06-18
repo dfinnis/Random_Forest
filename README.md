@@ -82,3 +82,12 @@ Don't print seed or forest statistics.
 Any non-flag argument will be read as data path. The default data path is data.csv.
 
 ```go run main.go data.csv```
+
+
+## test.sh
+
+The tests run multiple test cases for each depth and shows the accuracy for training & test sets. This shows the ideal forest depth to be around 5, where we reach peak test set accuracy (~95%). We start to overfit beyond a depth of 5, the training set accuracy continues to increase but the test set accuracy declines.
+
+```./test.sh```
+
+<img src="https://github.com/dfinnis/Random_Forest/blob/master/img/test.png" width="400">
