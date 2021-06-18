@@ -86,7 +86,11 @@ Any non-flag argument will be read as data path. The default data path is data.c
 
 ## test.sh
 
-Prints for each *-d* depth the actual max & mean depth, accuracy for training & test sets, and mean training time. This shows the ideal forest depth to be around 5, where we reach peak test set accuracy (~96%). We start to overfit beyond a depth of 5, the training set accuracy continues to increase but the test set accuracy declines. The max depth never passes 9, by which point each leaf is pure (100% one diagnosis) and the training subset is classified perfectly. The mean depth never exceeds 5.5, by which point the majority of trees have classified their training subset perfectly.
+Prints for each *-d* depth the actual max & mean depth, accuracy for training & test sets, and mean training time.
+
+This shows the ideal forest depth to be around 5, where we reach peak test set accuracy (~96%). We start to overfit beyond a depth of 5, the training set accuracy continues to increase but the test set accuracy declines.
+
+The max depth never exceeds 9, by which point each leaf is pure (100% one diagnosis) and the training subset is classified perfectly. The mean depth never exceeds 5.5, by which point the majority of trees have classified their training subset perfectly.
 
 ```./test.sh```
 
