@@ -1,9 +1,12 @@
 #### -- Random Forest Test -- ####
 go build
+if [ -e accuracy.csv ]
+then
+    rm accuracy.csv
+fi
 
 #### -- Config -- ####
 CASES=10
-
 
 #### -- Print Header -- ####
 RESET="\x1b[0m"
@@ -89,6 +92,7 @@ unit_test()
 		best_depth=$DEPTH
 	fi
 
+	echo "$accuracyTrainMean, $accuracyTestMean" >> accuracy.csv
 	printf "|\x1b[1m %-2d \x1b[0m| %-3d | %-4.1f | %-12f | %-12f | %-9f |\n" $DEPTH $depthMax $depthMeanTotal $accuracyTrainMean $accuracyTestMean $timeMean
 }
 
@@ -113,6 +117,9 @@ echo "+----+-----+------+--------------+--------------+-----------+"
 echo
 printf "Best Depth for Test Set Accuracy: %d\n\n" $best_depth
 
+#### -- Visualize -- ####
+python3 visualize.py
 
 #### -- Cleanup -- ####
 rm Random_Forest
+rm accuracy.csv
