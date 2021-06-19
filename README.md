@@ -94,4 +94,8 @@ The max depth never exceeds 9, by which point each leaf is pure (100% one diagno
 
 ```./test.sh```
 
-<img src="https://github.com/dfinnis/Random_Forest/blob/master/img/test.png" width="400">
+<img src="https://github.com/dfinnis/Random_Forest/blob/master/img/test.png" width="500">
+
+When finished *test.sh* shows a graph of accuracy over depth for training & test sets.
+
+<img src="https://github.com/dfinnis/Random_Forest/blob/master/img/visualize.png" width="500">
