@@ -12,7 +12,7 @@ def read_csv():
 			test_accuracy.append(float(row[1]))
 	return train_accuracy, test_accuracy
 
-# visualize plots accuracy over training
+# visualize plots accuracy over depth
 def visualize(train_accuracy, test_accuracy):
 	depth = list(range(1, len(test_accuracy) + 1))
 
@@ -24,7 +24,7 @@ def visualize(train_accuracy, test_accuracy):
 	plt.legend()
 	plt.show()
 
-# main reads accuracy.csv & plots accuracy
+# main reads accuracy.csv & plots accuracy over depth
 def main():
 	try:
 		train_accuracy, test_accuracy = read_csv()
